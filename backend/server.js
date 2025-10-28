@@ -16,7 +16,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: "https://quicktix-1hu937yh9-gregory-halls-projects.vercel.app/",
   credentials: true
 })); // Enable Cross-Origin Resource Sharing
 app.use(express.json()); // Allow the server to accept JSON in request bodies
