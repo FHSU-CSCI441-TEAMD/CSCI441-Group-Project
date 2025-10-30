@@ -109,16 +109,16 @@ This script creates the first 'Admin' account using the credentials from `code/b
 
 ### Step 4.3: Run the Frontend Server
 
-1.  Open a **second terminal window**.
-2.  Navigate to the frontend directory:
-    ```bash
-    cd code/frontend
-    ```
-3.  Start the frontend development server:
-    ```bash
-    npm run dev
-    ```
-    (Wait until you see a message indicating the server is running, usually providing a URL like `http://localhost:3000`)
+1.  Open a **second terminal window**.
+2.  Navigate to the frontend directory:
+    ```bash
+    cd code/frontend
+    ```
+3.  Start the frontend development server:
+    ```bash
+s   npm start
+    ```
+    (Wait until you see a message indicating the server is running, usually providing a URL like `http://localhost:3000`)
 
 ### Step 4.4: Access the Application
 
