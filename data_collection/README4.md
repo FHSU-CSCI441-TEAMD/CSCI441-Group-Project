@@ -23,17 +23,20 @@ This solves the "chicken-and-egg" problem of how to create the first admin when 
     * `ADMIN_EMAIL`
     * `ADMIN_PASSWORD`
 
-3.  **Configure Scripts:** The `package.json` file located in `code/backend` must contain the following script:
-    ```json
-    "seed": "node seeder.js"
-    ```
-    (Note: The seeder script itself, `seeder.js`, is located in this `data_collection` folder, so the script should be `"seed": "node ../../data_collection/seeder.js"`)
+## 3. Script Configuration (in `package.json`)
 
-## 3. How to Run the Script
+To run the seeder script (located in `data_collection/`) from the `code/backend/` directory, the `package.json` file in `code/backend/` **must** contain the following "seed" script:
+
+```json
+"scripts": {
+  "seed": "node ../../data_collection/seeder.js"
+}
+
+## 4. How to Run the Script
 
 This script should only be run **ONCE** per new database. It is designed to check if an admin already exists and will skip if one is found.
 
-1.  Open a terminal and navigate to the `code/backend` directory:
+1.  Open a terminal and navigate to the **`code/backend`** directory:
     ```bash
     cd code/backend
     ```
