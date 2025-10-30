@@ -1,0 +1,115 @@
+/* Container */
+.formContainer {
+  margin: 32px auto;
+  max-width: 700px; /* a bit wider for description comfort */
+}
+
+/* Card */
+.ticketForm {
+  background-color: #f5f7fa;
+  color: #111827;
+  padding: 24px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Labels */
+.ticketForm label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+/* Inputs */
+.ticketForm input,
+.ticketForm select,
+.ticketForm textarea {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ticketForm input:focus,
+.ticketForm select:focus,
+.ticketForm textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.25);
+  outline: none;
+}
+
+/* Radios */
+.radioGroup {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 100%;
+  padding-top: 4px;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.radioOption input[type="radio"] {
+  cursor: pointer;
+}
+
+/* Error */
+.error-message {
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* Button */
+.ticketForm button {
+  padding: 10px 18px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.2s ease;
+}
+
+.ticketForm button:hover {
+  background-color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .ticketForm {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .radioGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ticketForm button {
+    width: 100%;
+    align-self: center;
+  }
+}

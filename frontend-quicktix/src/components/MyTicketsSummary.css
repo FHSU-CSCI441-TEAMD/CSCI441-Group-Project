@@ -1,0 +1,74 @@
+.headerContainer {
+  padding: 16px 24px;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Top row: h2 and button */
+.topRow {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 10px;
+}
+
+/* Paragraph row: 4 side-by-side on desktop */
+.paragraphRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 8px;
+}
+
+.paragraphRow p {
+  margin: 0;
+  color: #000;
+  font-size: 1rem;
+  min-width: 100px; /* Helps maintain width on mobile */
+}
+
+/* Button styling */
+.newTicketBtn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newTicketBtn:hover {
+  background-color: #0056b3;
+}
+
+.open {
+  background-color: #63c0b4;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 4px;
+}
+
+.inProgress {
+  background-color: #199b40;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 4px;  
+}
+
+.resolved {
+  background-color: #cada43;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 4px; 
+}
+
+.closed {
+  background-color: #fa2c2c;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 4px;  
+}

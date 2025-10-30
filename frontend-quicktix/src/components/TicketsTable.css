@@ -1,0 +1,154 @@
+/* ===== TicketsTable Layout ===== */
+.tickets-table-container {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 1100px;
+
+  /* 🔹 Add subtle contrast */
+  background-color: #f8f9fb; /* light gray-blue tint for outer container */
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.tickets-table-container h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #222;
+  text-align: left;
+}
+
+/* ===== Table Base ===== */
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  min-width: 850px;
+
+  /* 🔹 Give table a clean white surface */
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ===== Header ===== */
+.tickets-table th,
+.tickets-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tickets-table th {
+  background-color: #eef1f5;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-bottom: 2px solid #d9dee6;
+}
+
+/* ===== Row Striping & Hover ===== */
+.tickets-table tr:nth-child(even) {
+  background-color: #fafbfc; /* alternate row shading */
+}
+
+.tickets-table tr:hover {
+  background-color: #f0f6ff; /* subtle blue tint on hover */
+}
+
+/* ===== Column Widths ===== */
+.tickets-table th:nth-child(1),
+.tickets-table td:nth-child(1) {
+  width: 22%; /* Title */
+}
+
+.tickets-table th:nth-child(2),
+.tickets-table td:nth-child(2) {
+  width: 13%; /* Status */
+}
+
+.tickets-table th:nth-child(3),
+.tickets-table td:nth-child(3) {
+  width: 13%; /* Priority */
+}
+
+.tickets-table th:nth-child(4),
+.tickets-table td:nth-child(4) {
+  width: 18%; /* Agent */
+}
+
+.tickets-table th:nth-child(5),
+.tickets-table td:nth-child(5),
+.tickets-table th:nth-child(6),
+.tickets-table td:nth-child(6) {
+  width: 17%; /* Created + Updated columns */
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* ===== Status Styles ===== */
+.status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.open {
+  color: #1e88e5;
+}
+
+.status.in-progress {
+  color: #ffb400;
+}
+
+.status.resolved {
+  color: #28a745;
+}
+
+/* ===== Priority Styles ===== */
+.priority {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.priority.low {
+  color: #28a745;
+}
+
+.priority.medium {
+  color: #ffb400;
+}
+
+.priority.high {
+  color: #d9534f;
+  font-weight: 600;
+}
+
+/* ===== Empty State ===== */
+.tickets-empty {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .tickets-table-container {
+    padding: 1rem;
+  }
+
+  .tickets-table {
+    font-size: 0.85rem;
+    table-layout: auto;
+  }
+
+  .tickets-table th,
+  .tickets-table td {
+    padding: 0.5rem;
+    white-space: normal;
+  }
+}
