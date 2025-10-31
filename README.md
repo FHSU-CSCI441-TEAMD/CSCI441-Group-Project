@@ -4,7 +4,7 @@ This is the main repository for the CSCI 441 (Software Engineering) group projec
 
 ## Live Links
 
-* **Frontend (Vercel):** [https://quicktix-weld.vercel.app/](https://quicktix-weld.vercel.app/)
+* **Frontend (Vercel):** [https://quicktix-r1fv.onrender.com](https://quicktix-r1fv.onrender.com)
 * **Backend (Render):** [https://csci441-group-project.onrender.com/](https://csci441-group-project.onrender.com/)
 
 ---
