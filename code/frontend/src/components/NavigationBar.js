@@ -70,7 +70,7 @@ function NavigationBar() {
             <Link to="/create-new-ticket">Create New Ticket</Link>
           </li>
           <li>
-            <Link to="/contact-us">Contact Us</Link>
+            <Link to="/update-profile">Update Profile</Link>
           </li>
 
           {/* ✅ Display user's name */}
