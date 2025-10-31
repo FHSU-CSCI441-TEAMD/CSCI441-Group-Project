@@ -86,16 +86,24 @@ export function TicketsProvider({ children }) {
   // ✅ Load stored user and tickets on app start
   useEffect(() => {
     const init = async () => {
+      let user = null;
       try {
         const storedUser = localStorage.getItem("user");
         if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
-          setCurrentUser(JSON.parse(storedUser));
+
+          // UPDATE HERE
+          // 1. Set user from storage FIRST
+          const parsedUser = JSON.parse(storedUser);
+          setCurrentUser(parsedUser);
+
+          // 2. ONLY THEN, try to refresh the user
+          user = await refreshCurrentUser(); 
         }
       } catch {
         /* ignore corrupted data */
       }
 
-      const user = await refreshCurrentUser();
+      // 3. Only fetch tickets if the user was successfully refreshed
       if (user) await fetchTickets();
     };
 
