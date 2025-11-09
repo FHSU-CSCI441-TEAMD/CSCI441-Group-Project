@@ -1,5 +1,6 @@
 // src/components/ForgotPassword.js
 import React, { useState } from "react";
+import "./ForgotPassword.css";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -47,6 +48,9 @@ const ForgotPassword = () => {
           required
         />
         <button type="submit">Send Reset Link</button>
+        <p className="login-page">
+          Return to <Link to="/">Log in</Link>
+        </p>
       </form>
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
