@@ -102,7 +102,7 @@ export default function Login() {
         </button>
 
         <p className="reset-link">
-          Forgot your password? <Link to="/reset">Reset it</Link>
+          Forgot your password? <Link to="/forgot-passowrd">Reset it</Link>
         </p>
 
         <p className="sign-up">
