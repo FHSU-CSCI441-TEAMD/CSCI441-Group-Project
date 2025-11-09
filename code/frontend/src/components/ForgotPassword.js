@@ -1,5 +1,6 @@
 // src/components/ForgotPassword.js
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./ForgotPassword.css";
 
 const API_BASE =
