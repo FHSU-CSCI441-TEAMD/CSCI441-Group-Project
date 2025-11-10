@@ -32,18 +32,49 @@ function TicketDetails() {
   if (!ticket) return <p>Loading...</p>;
 
   return (
-    <div className="ticket-details">
-      <h2>{ticket.title}</h2>
-      <p><strong>Status:</strong> {ticket.status}</p>
-      <p><strong>Priority:</strong> {ticket.priority}</p>
-      <p><strong>Agent:</strong> {ticket.agent?.name || "Unassigned"}</p>
-      <p><strong>Created:</strong> {new Date(ticket.createdAt).toLocaleString()}</p>
-      <p><strong>Updated:</strong> {new Date(ticket.updatedAt).toLocaleString()}</p>
-      <p><strong>Description:</strong></p>
-      <p>{ticket.description || "No description provided."}</p>
+    <>
+      <NavigationBar />
+      <div className="ticket-details">
+        <h2>Ticket Details</h2>
 
-      <Link to="/home" className="back-button">← Back to Tickets</Link>
-    </div>
+        <table className="ticket-info-table">
+          <tbody>
+            <tr>
+              <th>Title:</th>
+              <td>{ticket.title}</td>
+            </tr>
+            <tr>
+              <th>Status:</th>
+              <td className={`status ${ticket.status?.toLowerCase()}`}>{ticket.status}</td>
+            </tr>
+            <tr>
+              <th>Priority:</th>
+              <td className={`priority ${ticket.priority?.toLowerCase()}`}>{ticket.priority}</td>
+            </tr>
+            <tr>
+              <th>Agent:</th>
+              <td>{ticket.agent?.name || "Unassigned"}</td>
+            </tr>
+            <tr>
+              <th>Created:</th>
+              <td>{new Date(ticket.createdAt).toLocaleString()}</td>
+            </tr>
+            <tr>
+              <th>Updated:</th>
+              <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
+            </tr>
+            <tr className="desc-row">
+              <th>Description:</th>
+              <td className="desc-cell">
+                {ticket.description || "No description provided."}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <Link to="/home" className="back-button">← Back to Tickets</Link>
+      </div>
+    </>
   );
 }
 
