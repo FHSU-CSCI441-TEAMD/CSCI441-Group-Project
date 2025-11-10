@@ -14,6 +14,35 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMessage("");
+  setError("");
+  console.log("Submitting forgot password for:", email);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+      credentials: "include",
+    });
+
+    console.log("Response status:", res.status);
+    const text = await res.text();
+    console.log("Raw response:", text);
+
+    if (res.ok) {
+      setMessage("✅ Password reset link sent to your email.");
+    } else {
+      setError("❌ " + text);
+    }
+  } catch (err) {
+    console.error("Request failed:", err);
+    setError("❌ Network error. Please try again.");
+  }
+};
+
+  /*const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
@@ -34,7 +63,7 @@ const ForgotPassword = () => {
     } catch (err) {
       setError("❌ Network error. Please try again.");
     }
-  };
+  }; */
 
   return (
     <div className="reset-container">

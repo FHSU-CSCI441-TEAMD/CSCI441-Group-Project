@@ -1,60 +1,68 @@
-/* ===== Container ===== */
+/* ===== Card Container ===== */
 .update-profile-container {
-  max-width: 480px;
-  margin: 6vh auto;
-  padding: 2rem 2.5rem;
-  background-color: #ffffff;
+  max-width: 520px;                 /* a bit wider for comfort */
+  margin: 7vh auto;
+  padding: 2rem 2rem;               /* ample padding so nothing hugs edges */
+  background-color: #fff;
   border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: center;              /* center all children horizontally */
+  text-align: center;               /* center headings and helper text */
+  box-sizing: border-box;
 }
 
-/* ===== Heading ===== */
+/* ===== Title ===== */
 .update-profile-container h2 {
   font-size: 1.9rem;
   font-weight: 600;
   color: #222;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.25rem;
 }
 
-/* ===== Form ===== */
+/* ===== Form layout ===== */
 .update-profile-container form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center;              /* center rows */
 }
 
-/* ===== Form Groups ===== */
+/* Each row is centered with a constrained inner width */
 .form-group {
   width: 100%;
-  margin-bottom: 1.3rem;
+  margin-bottom: 1.15rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;              /* center label + input as a block */
 }
 
+/* Center the label and cap its width so it matches the input */
 .form-group label {
+  width: 100%;
+  max-width: 380px;                 /* ✅ same cap as input */
+  margin: 0 auto 0.45rem;           /* center block + bottom gap */
   font-weight: 500;
   color: #333;
-  margin-bottom: 0.4rem;
   font-size: 1rem;
+  text-align: center;               /* center the label text */
 }
 
+/* Center the inputs, keep them away from the edges */
 .form-group input {
   width: 100%;
+  max-width: 380px;                 /* ✅ caps width so it doesn’t touch borders */
+  margin: 0 auto;                   /* center horizontally */
   padding: 0.75rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+  box-sizing: border-box;
   transition: border-color 0.25s ease, background-color 0.25s ease;
 }
 
-/* ===== Readonly Fields ===== */
+/* Readonly style for userId */
 .form-group input[readonly] {
   background-color: #f8f8f8;
   color: #777;
@@ -67,17 +75,18 @@
   background-color: #fff;
 }
 
-/* ===== Buttons ===== */
+/* ===== Buttons row ===== */
 .button-row {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: center;          /* center buttons */
   align-items: center;
-  margin-top: 1.5rem;
-  gap: 1rem;
+  gap: 0.9rem;
+  margin-top: 1.4rem;
   flex-wrap: wrap;
 }
 
+/* Base button */
 button {
   border: none;
   padding: 0.8rem 1.4rem;
@@ -88,81 +97,45 @@ button {
   transition: background-color 0.25s ease, transform 0.15s ease;
 }
 
-/* ===== Button Styles ===== */
-.edit-btn {
-  background-color: #0077cc;
-  color: #fff;
-}
+/* Button styles */
+.edit-btn { background-color: #0077cc; color: #fff; }
+.edit-btn:hover { background-color: #005fa3; transform: translateY(-1px); }
 
-.edit-btn:hover {
-  background-color: #005fa3;
-  transform: translateY(-1px);
-}
+.save-btn { background-color: #28a745; color: #fff; }
+.save-btn:hover { background-color: #1f8c3a; transform: translateY(-1px); }
+.save-btn[disabled] { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-.save-btn {
-  background-color: #28a745;
-  color: #fff;
-}
+.cancel-btn { background-color: #d9534f; color: #fff; }
+.cancel-btn:hover { background-color: #b94441; transform: translateY(-1px); }
 
-.save-btn:hover {
-  background-color: #1f8c3a;
-  transform: translateY(-1px);
-}
-
-.save-btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.cancel-btn {
-  background-color: #d9534f;
-  color: #fff;
-}
-
-.cancel-btn:hover {
-  background-color: #b94441;
-  transform: translateY(-1px);
-}
-
-/* ===== Feedback Messages ===== */
-.success,
-.error {
+/* ===== Messages ===== */
+.success, .error {
   font-weight: 600;
   margin-top: 1rem;
 }
+.success { color: #28a745; }
+.error   { color: #d9534f; }
 
-.success {
-  color: #28a745;
-}
-
-.error {
-  color: #d9534f;
-}
-
-/* ===== Responsive Design ===== */
-@media (max-width: 768px) {
+/* ===== Responsive tweaks ===== */
+@media (max-width: 480px) {
   .update-profile-container {
-    width: 90%;
+    width: 92%;
     padding: 1.5rem;
   }
 
-  .form-group label {
-    font-size: 0.95rem;
-  }
-
+  /* keep input + label width under control on small screens */
+  .form-group label,
   .form-group input {
-    padding: 0.65rem 0.9rem;
-    font-size: 0.95rem;
+    max-width: 100%;
   }
 
   button {
-    font-size: 0.95rem;
-    padding: 0.7rem 1.2rem;
+    width: 100%;
+    max-width: 380px;               /* match input width when space allows */
   }
 
   .button-row {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
 }
