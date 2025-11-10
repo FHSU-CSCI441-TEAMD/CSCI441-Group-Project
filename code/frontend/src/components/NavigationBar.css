@@ -80,7 +80,7 @@ body {
 }
 
 main {
-  padding-top: 90px; /* ✅ ensures content isn't hidden behind fixed navbar */
+  padding-top: 120px; /* ✅ ensures content isn't hidden behind fixed navbar */
 }
 
 /* ===== Responsive behavior ===== */
