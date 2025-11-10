@@ -30,22 +30,6 @@
   min-width: 100px; /* Helps maintain width on mobile */
 }
 
-/* Button styling */
-.newTicketBtn {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.newTicketBtn:hover {
-  background-color: #0056b3;
-}
-
 .open {
   background-color: #63c0b4;
   border-radius: 5px;
@@ -65,11 +49,4 @@
   border-radius: 5px;
   font-weight: bold;
   padding: 4px; 
-}
-
-.closed {
-  background-color: #fa2c2c;
-  border-radius: 5px;
-  font-weight: bold;
-  padding: 4px;  
 }
