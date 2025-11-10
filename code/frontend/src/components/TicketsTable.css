@@ -127,6 +127,15 @@
   font-weight: 600;
 }
 
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #eef4ff;
+}
+
 /* ===== Empty State ===== */
 .tickets-empty {
   text-align: center;

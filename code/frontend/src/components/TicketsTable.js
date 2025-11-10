@@ -1,13 +1,13 @@
-// src/components/TicketsTable.js
 import React from "react";
 import { useTickets } from "../TicketsContext";
+import { useNavigate } from "react-router-dom";
 import "./TicketsTable.css";
 
 function TicketsTable({ tickets: propTickets }) {
   const { tickets: contextTickets, currentUser } = useTickets();
   const tickets = propTickets || contextTickets || [];
+  const navigate = useNavigate();
 
-  // Format dates nicely
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const d = new Date(dateStr);
@@ -28,6 +28,10 @@ function TicketsTable({ tickets: propTickets }) {
     );
   }
 
+  const handleRowClick = (ticketId) => {
+    navigate(`/ticket/${ticketId}`);
+  };
+
   return (
     <div className="tickets-table-container">
       <h3>
@@ -46,7 +50,6 @@ function TicketsTable({ tickets: propTickets }) {
         </thead>
         <tbody>
           {tickets.map((t) => {
-            // Prevent showing identical Created/Updated times unless actually changed
             const created = formatDate(t.createdAt);
             const updated =
               t.updatedAt && t.updatedAt !== t.createdAt
@@ -54,7 +57,11 @@ function TicketsTable({ tickets: propTickets }) {
                 : "—";
 
             return (
-              <tr key={t._id || t.id}>
+              <tr
+                key={t._id || t.id}
+                onClick={() => handleRowClick(t._id || t.id)}
+                className="clickable-row"
+              >
                 <td>{t.title || "Untitled"}</td>
                 <td className={`status ${t.status?.toLowerCase() || ""}`}>
                   {t.status || "Open"}
