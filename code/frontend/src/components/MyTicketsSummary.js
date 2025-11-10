@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import { TicketsContext } from "../context/TicketsContext";
+import { TicketsContext } from "../TicketsContext";
 import "./MyTicketsSummary.css";
 
 function MyTicketsSummary() {
