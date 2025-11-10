@@ -1,0 +1,93 @@
+.update-profile-container {
+  max-width: 480px;
+  margin: 8vh auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.update-profile-container h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.form-group input[readonly] {
+  background-color: #f7f7f7;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.form-group input:focus {
+  border-color: #0077cc;
+  outline: none;
+  background-color: #fff;
+}
+
+.button-row {
+  margin-top: 1.5rem;
+}
+
+button {
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.edit-btn {
+  background-color: #0077cc;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #005fa3;
+  transform: translateY(-1px);
+}
+
+.save-btn {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background-color: #1f8c3a;
+  transform: translateY(-1px);
+}
+
+.success {
+  color: #28a745;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+.error {
+  color: #d9534f;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
