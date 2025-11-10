@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
+import "./TicketDetails.css";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
