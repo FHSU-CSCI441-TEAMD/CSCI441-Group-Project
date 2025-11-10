@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UpdateProfile.css";
 
 const API_BASE =
@@ -7,6 +8,8 @@ const API_BASE =
     : "http://localhost:5000";
 
 const UpdateProfile = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,9 +17,11 @@ const UpdateProfile = () => {
     password: "",
     confirmPassword: "",
   });
+  const [original, setOriginal] = useState({ name: "", email: "" });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isEditing, setIsEditing] = useState(false); // ✨ Edit mode toggle
+  const [isEditing, setIsEditing] = useState(false);
+  const [role, setRole] = useState("");
 
   // 🧭 Load current user profile
   useEffect(() => {
@@ -36,10 +41,12 @@ const UpdateProfile = () => {
             password: "",
             confirmPassword: "",
           });
+          setOriginal({ name: data.name, email: data.email });
+          setRole(data.role || "Customer"); // store user role
         } else {
           setError(data.message || "Failed to load profile.");
         }
-      } catch (err) {
+      } catch {
         setError("Network error loading profile.");
       }
     };
@@ -47,17 +54,32 @@ const UpdateProfile = () => {
     fetchProfile();
   }, []);
 
+  // 🧩 Detect if there are changes
+  const isDirty = useMemo(() => {
+    const nameChanged = formData.name.trim() !== original.name.trim();
+    const emailChanged = formData.email.trim() !== original.email.trim();
+    const passFilled = !!formData.password || !!formData.confirmPassword;
+    return nameChanged || emailChanged || passFilled;
+  }, [formData, original]);
+
   // 🧩 Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setMessage("");
+    setError("");
   };
 
-  // 💾 Save profile changes
+  // 💾 Submit changes
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
+
+    if (!isDirty) {
+      setError("No changes to save.");
+      return;
+    }
 
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
@@ -82,25 +104,48 @@ const UpdateProfile = () => {
 
       if (res.ok) {
         setMessage("✅ Profile updated successfully.");
+        setOriginal({ name: formData.name, email: formData.email });
         setFormData((prev) => ({
           ...prev,
           password: "",
           confirmPassword: "",
         }));
-        setIsEditing(false); // Lock form after success
+        setIsEditing(false);
       } else {
         setError(data.message || "Failed to update profile.");
       }
-    } catch (err) {
+    } catch {
       setError("❌ Network error. Please try again.");
     }
   };
 
-  // ✨ Toggle edit mode
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
+  // ✏️ Toggle Edit Mode
+  const toggleEdit = (e) => {
+    e.preventDefault();
+    setIsEditing((prev) => !prev);
     setMessage("");
     setError("");
+  };
+
+  // 🚫 Cancel editing — reset and redirect
+  const handleCancel = (e) => {
+    e.preventDefault();
+    // Reset fields
+    setFormData({
+      name: original.name,
+      email: original.email,
+      userId: original.email,
+      password: "",
+      confirmPassword: "",
+    });
+    setIsEditing(false);
+    setMessage("");
+    setError("");
+
+    // Redirect based on role
+    if (role === "Agent") navigate("/agent-home");
+    else if (role === "Admin") navigate("/admin-home");
+    else navigate("/home");
   };
 
   return (
@@ -173,14 +218,29 @@ const UpdateProfile = () => {
         )}
 
         <div className="button-row">
-          {isEditing ? (
-            <button type="submit" className="save-btn">
-              💾 Save Changes
-            </button>
-          ) : (
+          {!isEditing ? (
             <button type="button" onClick={toggleEdit} className="edit-btn">
               ✏️ Edit Profile
             </button>
+          ) : (
+            <>
+              <button
+                type="submit"
+                className="save-btn"
+                disabled={!isDirty}
+                aria-disabled={!isDirty}
+                title={!isDirty ? "No changes to save" : "Save changes"}
+              >
+                💾 Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="cancel-btn"
+              >
+                ✖ Cancel
+              </button>
+            </>
           )}
         </div>
       </form>

@@ -1,29 +1,48 @@
+/* ===== Container ===== */
 .update-profile-container {
   max-width: 480px;
-  margin: 8vh auto;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin: 6vh auto;
+  padding: 2rem 2.5rem;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
+/* ===== Heading ===== */
 .update-profile-container h2 {
-  font-size: 1.75rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.9rem;
+  font-weight: 600;
   color: #222;
+  margin-bottom: 1.2rem;
 }
 
+/* ===== Form ===== */
+.update-profile-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Form Groups ===== */
 .form-group {
-  margin-bottom: 1.2rem;
-  text-align: left;
+  width: 100%;
+  margin-bottom: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .form-group label {
-  display: block;
   font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #444;
+  color: #333;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
 }
 
 .form-group input {
@@ -32,11 +51,12 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
 }
 
+/* ===== Readonly Fields ===== */
 .form-group input[readonly] {
-  background-color: #f7f7f7;
+  background-color: #f8f8f8;
   color: #777;
   cursor: not-allowed;
 }
@@ -47,19 +67,28 @@
   background-color: #fff;
 }
 
+/* ===== Buttons ===== */
 .button-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 button {
   border: none;
-  padding: 0.8rem 1.2rem;
+  padding: 0.8rem 1.4rem;
   border-radius: 8px;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.25s ease, transform 0.15s ease;
 }
 
+/* ===== Button Styles ===== */
 .edit-btn {
   background-color: #0077cc;
   color: #fff;
@@ -80,14 +109,60 @@ button {
   transform: translateY(-1px);
 }
 
+.save-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancel-btn {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background-color: #b94441;
+  transform: translateY(-1px);
+}
+
+/* ===== Feedback Messages ===== */
+.success,
+.error {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
 .success {
   color: #28a745;
-  margin-top: 0.75rem;
-  font-weight: 600;
 }
 
 .error {
   color: #d9534f;
-  margin-top: 0.75rem;
-  font-weight: 600;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .update-profile-container {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .form-group input {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .button-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 }

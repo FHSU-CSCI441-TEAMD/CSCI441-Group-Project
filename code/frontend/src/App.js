@@ -9,6 +9,7 @@ import { TicketsProvider } from './TicketsContext';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import UpdateProfile from './components/UpdateProfile';
+import AgentHome from './components/AgentHome';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/create-new-ticket" element={<Ticket />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/agent-home" element={<AgentHome />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
