@@ -1,9 +1,9 @@
-import React, { useContext, useMemo } from "react";
-import { TicketsContext } from "../TicketsContext";
+import React, { useMemo } from "react";
+import { useTickets } from "../TicketsContext";
 import "./MyTicketsSummary.css";
 
 function MyTicketsSummary() {
-  const { tickets } = useContext(TicketsContext);
+  const { tickets } = useTickets();
 
   // Compute counts only when tickets change
   const { open, inProgress, resolved, closed } = useMemo(() => {
