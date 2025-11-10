@@ -35,45 +35,47 @@ function TicketDetails() {
   return (
     <>
       <NavigationBar />
-      <div className="ticket-details">
-        <h2>Ticket Details</h2>
+      <div className="ticket-details-wrapper">
+        <div className="ticket-details">
+          <h2>Ticket Details</h2>
 
-        <table className="ticket-info-table">
-          <tbody>
-            <tr>
-              <th>Title:</th>
-              <td>{ticket.title}</td>
-            </tr>
-            <tr>
-              <th>Status:</th>
-              <td className={`status ${ticket.status?.toLowerCase()}`}>{ticket.status}</td>
-            </tr>
-            <tr>
-              <th>Priority:</th>
-              <td className={`priority ${ticket.priority?.toLowerCase()}`}>{ticket.priority}</td>
-            </tr>
-            <tr>
-              <th>Agent:</th>
-              <td>{ticket.agent?.name || "Unassigned"}</td>
-            </tr>
-            <tr>
-              <th>Created:</th>
-              <td>{new Date(ticket.createdAt).toLocaleString()}</td>
-            </tr>
-            <tr>
-              <th>Updated:</th>
-              <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
-            </tr>
-            <tr className="desc-row">
-              <th>Description:</th>
-              <td className="desc-cell">
-                {ticket.description || "No description provided."}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <table className="ticket-info-table">
+            <tbody>
+              <tr>
+                <th>Title:</th>
+                <td>{ticket.title}</td>
+              </tr>
+              <tr>
+                <th>Status:</th>
+                <td className={`status ${ticket.status?.toLowerCase()}`}>{ticket.status}</td>
+              </tr>
+              <tr>
+                <th>Priority:</th>
+                <td className={`priority ${ticket.priority?.toLowerCase()}`}>{ticket.priority}</td>
+              </tr>
+              <tr>
+                <th>Agent:</th>
+                <td>{ticket.agent?.name || "Unassigned"}</td>
+              </tr>
+              <tr>
+                <th>Created:</th>
+                <td>{new Date(ticket.createdAt).toLocaleString()}</td>
+              </tr>
+              <tr>
+                <th>Updated:</th>
+                <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
+              </tr>
+              <tr className="desc-row">
+                <th>Description:</th>
+                <td className="desc-cell">
+                  {ticket.description || "No description provided."}
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-        <Link to="/home" className="back-button">← Back to Tickets</Link>
+          <Link to="/home" className="back-button">← Back to Tickets</Link>
+        </div>
       </div>
     </>
   );

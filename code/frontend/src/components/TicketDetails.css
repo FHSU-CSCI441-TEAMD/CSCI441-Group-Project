@@ -1,17 +1,24 @@
-/* ===== Main Container ===== */
+/* ===== Main Wrapper ===== */
+.ticket-details-wrapper {
+  display: flex;
+  justify-content: center;   /* ⟵ center horizontally */
+  align-items: flex-start;   /* top align (or use center to vertically center) */
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 3rem 1rem;
+  box-sizing: border-box;
+}
+
+/* ===== Card Container ===== */
 .ticket-details {
+  width: 100%;
   max-width: 900px;
-  margin: 5rem auto; /* Center horizontally + add vertical breathing room */
-  padding: 2.5rem 2rem;
-  background: linear-gradient(180deg, #f9fafc 0%, #ffffff 100%);
+  background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
   color: #1f2937;
   font-family: "Inter", sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* ✅ Centers the table horizontally */
-  justify-content: center;
 }
 
 /* ===== Header ===== */
@@ -23,7 +30,7 @@
   margin-bottom: 2rem;
 }
 
-/* ===== Info Table ===== */
+/* ===== Table ===== */
 .ticket-info-table {
   width: 100%;
   border-collapse: collapse;
@@ -33,10 +40,11 @@
 
 .ticket-info-table th,
 .ticket-info-table td {
-  text-align: left; /* ✅ Left-align all text for readability */
+  text-align: left; /* ✅ force left alignment */
   padding: 1rem 1.25rem;
   border-bottom: 1px solid #e5e7eb;
   vertical-align: top;
+  word-break: break-word;
 }
 
 .ticket-info-table th {
@@ -44,14 +52,11 @@
   background-color: #f3f4f6;
   color: #111827;
   font-weight: 600;
-  border-radius: 8px 0 0 8px;
 }
 
 .ticket-info-table td {
   background-color: #ffffff;
   color: #374151;
-  border-radius: 0 8px 8px 0;
-  word-break: break-word;
 }
 
 /* ===== Description Row ===== */
@@ -68,7 +73,7 @@
   line-height: 1.6;
   color: #374151;
   white-space: pre-wrap;
-  text-align: left; /* ✅ Left-align description text */
+  text-align: left;
 }
 
 /* ===== Status Colors ===== */
@@ -76,12 +81,10 @@
   color: #2563eb;
   font-weight: 600;
 }
-
 .status.in-progress {
   color: #f59e0b;
   font-weight: 600;
 }
-
 .status.resolved {
   color: #16a34a;
   font-weight: 600;
@@ -91,11 +94,9 @@
 .priority.low {
   color: #16a34a;
 }
-
 .priority.medium {
   color: #f59e0b;
 }
-
 .priority.high {
   color: #dc2626;
   font-weight: 600;
@@ -104,7 +105,7 @@
 /* ===== Back Button ===== */
 .back-button {
   display: inline-block;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   padding: 0.7rem 1.5rem;
   background-color: #2563eb;
   color: #ffffff;
@@ -119,11 +120,10 @@
   transform: translateY(-2px);
 }
 
-/* ===== Responsive Design ===== */
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .ticket-details {
     padding: 1.5rem;
-    margin: 3rem 1rem;
   }
 
   .ticket-info-table,
