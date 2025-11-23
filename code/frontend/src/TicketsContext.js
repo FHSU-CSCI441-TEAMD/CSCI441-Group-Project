@@ -8,6 +8,7 @@ const API_BASE =
 
 const TicketsCtx = createContext();
 
+
 export function TicketsProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [tickets, setTickets] = useState([]);
