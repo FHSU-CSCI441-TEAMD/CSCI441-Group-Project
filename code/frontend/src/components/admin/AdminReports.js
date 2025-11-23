@@ -28,6 +28,7 @@ export default function AdminReports() {
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
 
+  
   useEffect(() => {
     if (!currentUser || currentUser.role !== "Admin") {
       navigate("/");
