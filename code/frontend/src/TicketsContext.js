@@ -152,3 +152,4 @@ export function TicketsProvider({ children }) {
 export function useTickets() {
   return useContext(TicketsCtx);
 }
+
