@@ -12,43 +12,27 @@ const API_BASE =
 
 function NavigationBar() {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser, setTickets } = useTickets(); // ✅ added setTickets
+  const { currentUser, setCurrentUser, setTickets } = useTickets();
 
   const handleLogout = async (e) => {
     e.preventDefault();
 
     try {
-      // ✅ Ask backend to clear JWT cookie
-      const response = await fetch(`${API_BASE}/api/auth/logout`, {
+      await fetch(`${API_BASE}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
-
-      if (!response.ok) {
-        console.warn("⚠️ Backend logout returned non-OK:", response.status);
-      }
-
-      // ✅ Clear local storage + context
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setCurrentUser(null);
-      setTickets([]); // ✅ instantly clears the table
-
-      // ✅ Redirect to login
-      navigate("/");
-      console.log("✅ User logged out successfully.");
     } catch (error) {
-      console.error("❌ Logout error:", error);
-      // Even if backend fails, clear local state to stay safe
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setCurrentUser(null);
-      setTickets([]);
-      navigate("/");
+      console.error("Logout error:", error);
     }
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+    setTickets([]);
+    navigate("/");
   };
 
-  // ✅ Show user's full name when logged in
   const displayName = currentUser?.name || currentUser?.email || "";
 
   return (
@@ -66,17 +50,31 @@ function NavigationBar() {
 
       <nav className="right">
         <ul>
-          <li>
-            <Link to="/create-new-ticket">Create New Ticket</Link>
-          </li>
-          <li>
-            <Link to="/update-profile">Update Profile</Link>
-          </li>
+          {/* ADMIN LINKS */}
+          {currentUser?.role === "Admin" && (
+            <>
+              <li><Link to="/admin-home">Admin Dashboard</Link></li>
+              <li><Link to="/admin-reports">Reports</Link></li>
+            </>
+          )}
 
-          {/* ✅ Display user's name */}
+          {/* AGENT LINKS */}
+          {currentUser?.role === "Agent" && (
+            <li><Link to="/agent-home">Agent Home</Link></li>
+          )}
+
+          {/* CUSTOMER LINKS */}
+          {currentUser?.role === "Customer" && (
+            <>
+              <li><Link to="/create-new-ticket">Create New Ticket</Link></li>
+            </>
+          )}
+
+          <li><Link to="/update-profile">Update Profile</Link></li>
+
           {displayName && (
             <li className="userName">
-              Hello,&nbsp;<strong>{displayName}</strong>
+              Hello, <strong>{displayName}</strong>
             </li>
           )}
 

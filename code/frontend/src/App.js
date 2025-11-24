@@ -11,6 +11,10 @@ import ResetPassword from "./components/ResetPassword";
 import UpdateProfile from './components/UpdateProfile';
 import AgentHome from './components/AgentHome';
 import TicketDetails from "./components/TicketDetails";
+import AdminHome from "./components/admin/AdminHome";
+import AdminReports from "./components/admin/AdminReports";
+import AdminReassignTicket from "./components/admin/AdminReassignTicket";
+
 
 function App() {
   return (
@@ -26,10 +30,14 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/ticket/:id" element={<TicketDetails />} />
+          <Route path="/admin-home" element={<AdminHome />} />
+<Route path="/admin-reports" element={<AdminReports />} />
+<Route path="/admin-reassign/:id" element={<AdminReassignTicket />} />
         </Routes>
       </TicketsProvider>
     </div>
   );
 }
+
 
 export default App;
