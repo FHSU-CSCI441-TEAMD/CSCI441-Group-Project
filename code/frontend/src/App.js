@@ -9,7 +9,6 @@ import { TicketsProvider } from './TicketsContext';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import UpdateProfile from './components/UpdateProfile';
-import AgentHome from './components/AgentHome';
 import TicketDetails from "./components/TicketDetails";
 import AdminHome from "./components/admin/AdminHome";
 import AdminReports from "./components/admin/AdminReports";
@@ -34,7 +33,6 @@ function App() {
           <Route path="/admin-home" element={<AdminHome />} />
           <Route path="/admin-reports" element={<AdminReports />} />
           <Route path="/admin-reassign/:id" element={<AdminReassignTicket />} />
-          <Route path="/agent-home" element={<AgentHome />} />
         </Routes>
       </TicketsProvider>
     </div>
