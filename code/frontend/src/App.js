@@ -14,6 +14,7 @@ import TicketDetails from "./components/TicketDetails";
 import AdminHome from "./components/admin/AdminHome";
 import AdminReports from "./components/admin/AdminReports";
 import AdminReassignTicket from "./components/admin/AdminReassignTicket";
+import AgentHome from "./components/agent/AgentHome";
 
 
 function App() {
@@ -31,8 +32,9 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/ticket/:id" element={<TicketDetails />} />
           <Route path="/admin-home" element={<AdminHome />} />
-<Route path="/admin-reports" element={<AdminReports />} />
-<Route path="/admin-reassign/:id" element={<AdminReassignTicket />} />
+          <Route path="/admin-reports" element={<AdminReports />} />
+          <Route path="/admin-reassign/:id" element={<AdminReassignTicket />} />
+          <Route path="/agent-home" element={<AgentHome />} />
         </Routes>
       </TicketsProvider>
     </div>

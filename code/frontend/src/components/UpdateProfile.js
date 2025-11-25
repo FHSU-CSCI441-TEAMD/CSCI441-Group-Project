@@ -7,7 +7,7 @@ const API_BASE =
     ? "https://csci441-group-project.onrender.com"
     : "http://localhost:5000";
 
-const UpdateProfile = () => {
+export default function UpdateProfile() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -17,13 +17,25 @@ const UpdateProfile = () => {
     password: "",
     confirmPassword: "",
   });
+
   const [original, setOriginal] = useState({ name: "", email: "" });
+  const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [role, setRole] = useState("");
 
-  // 🧭 Load current user profile
+  // ------------------------------------------------------------
+  // Centralized redirect function
+  // ------------------------------------------------------------
+  const redirectUserByRole = (role) => {
+    if (role === "Admin") return navigate("/admin-home");
+    if (role === "Agent") return navigate("/agent-home");
+    return navigate("/home"); // Customer fallback
+  };
+
+  // ------------------------------------------------------------
+  // Load user profile
+  // ------------------------------------------------------------
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -31,59 +43,60 @@ const UpdateProfile = () => {
           method: "GET",
           credentials: "include",
         });
-        const data = await res.json();
 
-        if (res.ok) {
-          setFormData({
-            name: data.name,
-            email: data.email,
-            userId: data.email,
-            password: "",
-            confirmPassword: "",
-          });
-          setOriginal({ name: data.name, email: data.email });
-          setRole(data.role || "Customer"); // store user role
-        } else {
-          setError(data.message || "Failed to load profile.");
-        }
-      } catch {
-        setError("Network error loading profile.");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Failed to load profile.");
+
+        setFormData({
+          name: data.name,
+          email: data.email,
+          userId: data.email,
+          password: "",
+          confirmPassword: "",
+        });
+
+        setOriginal({ name: data.name, email: data.email });
+        setRole(data.role || "Customer");
+
+      } catch (err) {
+        setError(err.message || "Network error loading profile.");
       }
     };
 
     fetchProfile();
   }, []);
 
-  // 🧩 Detect if there are changes
+  // ------------------------------------------------------------
+  // Detect changes
+  // ------------------------------------------------------------
   const isDirty = useMemo(() => {
     const nameChanged = formData.name.trim() !== original.name.trim();
     const emailChanged = formData.email.trim() !== original.email.trim();
-    const passFilled = !!formData.password || !!formData.confirmPassword;
-    return nameChanged || emailChanged || passFilled;
+    const passChanged = !!formData.password || !!formData.confirmPassword;
+    return nameChanged || emailChanged || passChanged;
   }, [formData, original]);
 
-  // 🧩 Handle input changes
+  // ------------------------------------------------------------
+  // Handle input
+  // ------------------------------------------------------------
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setMessage("");
     setError("");
   };
 
-  // 💾 Submit changes
+  // ------------------------------------------------------------
+  // Save changes
+  // ------------------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
 
-    if (!isDirty) {
-      setError("No changes to save.");
-      return;
-    }
+    if (!isDirty) return setError("No changes to save.");
 
     if (formData.password && formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+      return setError("Passwords do not match.");
     }
 
     try {
@@ -101,36 +114,30 @@ const UpdateProfile = () => {
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update profile.");
 
-      if (res.ok) {
-        setMessage("✅ Profile updated successfully.");
-        setOriginal({ name: formData.name, email: formData.email });
-        setFormData((prev) => ({
-          ...prev,
-          password: "",
-          confirmPassword: "",
-        }));
-        setIsEditing(false);
-      } else {
-        setError(data.message || "Failed to update profile.");
-      }
-    } catch {
-      setError("❌ Network error. Please try again.");
+      // Update local state
+      setMessage("Profile updated successfully!");
+      setOriginal({ name: formData.name, email: formData.email });
+      setFormData((prev) => ({
+        ...prev,
+        password: "",
+        confirmPassword: "",
+      }));
+      setIsEditing(false);
+
+      // 🔥 Redirect immediately (fix for your issue!)
+      redirectUserByRole(role);
+
+    } catch (err) {
+      setError(err.message || "Network error. Please try again.");
     }
   };
 
-  // ✏️ Toggle Edit Mode
-  const toggleEdit = (e) => {
-    e.preventDefault();
-    setIsEditing((prev) => !prev);
-    setMessage("");
-    setError("");
-  };
-
-  // 🚫 Cancel editing — reset and redirect
-  const handleCancel = (e) => {
-    e.preventDefault();
-    // Reset fields
+  // ------------------------------------------------------------
+  // Cancel editing
+  // ------------------------------------------------------------
+  const handleCancel = () => {
     setFormData({
       name: original.name,
       email: original.email,
@@ -138,25 +145,26 @@ const UpdateProfile = () => {
       password: "",
       confirmPassword: "",
     });
+
     setIsEditing(false);
     setMessage("");
     setError("");
 
-    // Redirect based on role
-    if (role === "Agent") navigate("/agent-home");
-    else if (role === "Admin") navigate("/admin-home");
-    else navigate("/home");
+    redirectUserByRole(role); // Cancel works exactly the same
   };
 
+  // ------------------------------------------------------------
+  // UI
+  // ------------------------------------------------------------
   return (
     <div className="update-profile-container">
       <h2>Profile Details</h2>
 
       <form onSubmit={handleSubmit}>
+        {/* USER ID */}
         <div className="form-group">
-          <label htmlFor="userId">User ID (email)</label>
+          <label>User ID (email)</label>
           <input
-            id="userId"
             type="text"
             name="userId"
             value={formData.userId}
@@ -165,10 +173,10 @@ const UpdateProfile = () => {
           />
         </div>
 
+        {/* NAME */}
         <div className="form-group">
-          <label htmlFor="name">Full Name</label>
+          <label>Full Name</label>
           <input
-            id="name"
             type="text"
             name="name"
             value={formData.name}
@@ -177,10 +185,10 @@ const UpdateProfile = () => {
           />
         </div>
 
+        {/* EMAIL */}
         <div className="form-group">
-          <label htmlFor="email">Email Address</label>
+          <label>Email Address</label>
           <input
-            id="email"
             type="email"
             name="email"
             value={formData.email}
@@ -189,12 +197,12 @@ const UpdateProfile = () => {
           />
         </div>
 
+        {/* PASSWORDS */}
         {isEditing && (
           <>
             <div className="form-group">
-              <label htmlFor="password">New Password (optional)</label>
+              <label>New Password (optional)</label>
               <input
-                id="password"
                 type="password"
                 name="password"
                 value={formData.password}
@@ -204,9 +212,8 @@ const UpdateProfile = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
+              <label>Confirm New Password</label>
               <input
-                id="confirmPassword"
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -217,9 +224,14 @@ const UpdateProfile = () => {
           </>
         )}
 
+        {/* BUTTONS */}
         <div className="button-row">
           {!isEditing ? (
-            <button type="button" onClick={toggleEdit} className="edit-btn">
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="edit-btn"
+            >
               ✏️ Edit Profile
             </button>
           ) : (
@@ -228,11 +240,11 @@ const UpdateProfile = () => {
                 type="submit"
                 className="save-btn"
                 disabled={!isDirty}
-                aria-disabled={!isDirty}
-                title={!isDirty ? "No changes to save" : "Save changes"}
+                title={isDirty ? "Save changes" : "No changes to save"}
               >
                 💾 Save Changes
               </button>
+
               <button
                 type="button"
                 onClick={handleCancel}
@@ -249,6 +261,4 @@ const UpdateProfile = () => {
       {error && <p className="error">{error}</p>}
     </div>
   );
-};
-
-export default UpdateProfile;
+}
