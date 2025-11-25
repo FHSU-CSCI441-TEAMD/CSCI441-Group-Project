@@ -37,27 +37,30 @@ export default function TicketComments({ ticketId }) {
     loadComments();
   }, [ticketId]);
 
-  const submitComment = async () => {
+    const submitComment = async () => {
     if (!newComment.trim()) return;
 
     try {
-      const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
+        const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: newComment }),
-      });
+        body: JSON.stringify({
+            message: newComment,   // ← REQUIRED NAME
+        }),
+        });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
 
-      // Add new comment to UI
-      setComments((prev) => [...prev, data]);
-      setNewComment("");
+        setComments((prev) => [...prev, data]);
+        setNewComment("");
+
     } catch (err) {
-      setError(err.message || "Error sending comment");
+        setError(err.message || "Failed to submit comment");
     }
-  };
+    };
+
 
   return (
     <div className="ticket-comments">

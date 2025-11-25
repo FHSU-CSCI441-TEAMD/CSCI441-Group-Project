@@ -1,0 +1,99 @@
+/* Wrapper */
+.ticket-comments {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* left align */
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+/* Header */
+.ticket-comments h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Error message */
+.ticket-comments .error {
+  color: #b00020;
+  font-size: 0.9rem;
+}
+
+/* Comments list */
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.comments-list li {
+  background: #f6f6f6;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border-left: 4px solid #0077cc;
+}
+
+/* Comment text */
+.comments-list li p {
+  margin: 0.25rem 0 0;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1.35rem;
+}
+
+/* Comment input container */
+.comment-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+/* Text area */
+.comment-input textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+/* Post button */
+.comment-input button {
+  align-self: flex-start; /* keep button left aligned */
+  background: #0077cc;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.comment-input button:hover {
+  background: #005fa3;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .comments-list li {
+    padding: 0.6rem;
+  }
+
+  .comment-input textarea {
+    min-height: 70px;
+  }
+
+  .comment-input button {
+    width: 100%; /* full width button on mobile */
+    text-align: center;
+  }
+}
