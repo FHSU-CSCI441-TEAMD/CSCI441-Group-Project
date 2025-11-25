@@ -1,7 +1,7 @@
 // src/components/NavigationBar.js
 import { Link, useNavigate } from "react-router-dom";
 import "./AgentNavigationBar.css";
-import logo from "./assets/logo.png";
+import logo from "../assets/logo.png";
 import { useTickets } from "../../TicketsContext";
 import React from "react";
 
