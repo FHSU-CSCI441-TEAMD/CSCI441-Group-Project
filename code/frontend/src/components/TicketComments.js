@@ -1,6 +1,7 @@
 // src/components/TicketComments.jsx
 import React, { useState, useEffect } from "react";
 import { useTickets } from "../TicketsContext";
+import "./TicketComments.css";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -14,7 +15,9 @@ export default function TicketComments({ ticketId }) {
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState("");
 
-  // Load comments
+  // --------------------------------------------------------
+  // Load comments for the ticket
+  // --------------------------------------------------------
   useEffect(() => {
     const loadComments = async () => {
       try {
@@ -22,6 +25,7 @@ export default function TicketComments({ ticketId }) {
           `${API_BASE}/api/tickets/${ticketId}`,
           { credentials: "include" }
         );
+
         const data = await response.json();
 
         if (response.ok) {
@@ -37,51 +41,57 @@ export default function TicketComments({ ticketId }) {
     loadComments();
   }, [ticketId]);
 
-    const submitComment = async () => {
+  // --------------------------------------------------------
+  // Submit a new comment
+  // --------------------------------------------------------
+  const submitComment = async () => {
     if (!newComment.trim()) return;
 
     try {
-        const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            message: newComment,   // ← REQUIRED NAME
+          text: newComment,  // **** FIXED: backend expects "text"
         }),
-        });
+      });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
 
-        setComments((prev) => [...prev, data]);
-        setNewComment("");
+      // Append the new comment to the list
+      setComments((prev) => [...prev, data]);
+      setNewComment("");
 
     } catch (err) {
-        setError(err.message || "Failed to submit comment");
+      setError(err.message || "Failed to submit comment");
     }
-    };
+  };
 
-
+  // --------------------------------------------------------
+  // UI Rendering
+  // --------------------------------------------------------
   return (
     <div className="ticket-comments">
       <h3>Comments</h3>
 
       {error && <p className="error">{error}</p>}
 
-      {/* Comments list */}
+      {/* Comments List */}
       <ul className="comments-list">
         {comments.map((c, index) => (
           <li key={index}>
-            <strong>{c.authorName}</strong>
+            <strong>{c.authorName || "Unknown User"}</strong>
             <span style={{ marginLeft: "10px", fontSize: "0.8rem", opacity: 0.7 }}>
               {new Date(c.createdAt).toLocaleString()}
             </span>
-            <p>{c.message}</p>
+            <p>{c.text}</p>
           </li>
         ))}
       </ul>
 
-      {/* Add comment box */}
+      {/* Add Comment Box */}
       <div className="comment-input">
         <textarea
           value={newComment}
