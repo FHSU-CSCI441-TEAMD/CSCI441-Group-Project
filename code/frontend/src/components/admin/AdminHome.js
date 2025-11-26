@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useTickets } from "../../TicketsContext";
 import NavigationBar from "../NavigationBar";
+import "../NavigationBar.css";
 import { useNavigate } from "react-router-dom";
 
 const API_BASE =

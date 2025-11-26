@@ -14,6 +14,21 @@ function NavigationBar() {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser, setTickets } = useTickets();
 
+  // -----------------------------------------------------
+  // Determine user home route based on role
+  // -----------------------------------------------------
+  const homeRoute =
+    currentUser?.role === "Admin"
+      ? "/admin-home"
+      : currentUser?.role === "Agent"
+      ? "/agent-home"
+      : currentUser
+      ? "/home"
+      : "/";
+
+  // -----------------------------------------------------
+  // Logout handler
+  // -----------------------------------------------------
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -38,19 +53,23 @@ function NavigationBar() {
   return (
     <div className="Wrapper">
       <header className="left">
+        {/* Logo + App Name */}
         <h1>
-          <Link to="/home" className="logoName">
+          <Link to={homeRoute} className="logoName">
             QuickTix
           </Link>
         </h1>
-        <Link to="/home">
+
+        <Link to={homeRoute}>
           <img src={logo} alt="QuickTix Logo" className="logo" />
         </Link>
       </header>
 
       <nav className="right">
         <ul>
-          {/* ADMIN LINKS */}
+          {/* -------------------------------------------------
+             ADMIN LINKS
+          ------------------------------------------------- */}
           {currentUser?.role === "Admin" && (
             <>
               <li><Link to="/admin-home">Admin Dashboard</Link></li>
@@ -58,18 +77,25 @@ function NavigationBar() {
             </>
           )}
 
-          {/* AGENT LINKS */}
+          {/* -------------------------------------------------
+             AGENT LINKS
+          ------------------------------------------------- */}
           {currentUser?.role === "Agent" && (
             <li><Link to="/agent-home">Agent Home</Link></li>
           )}
 
-          {/* CUSTOMER LINKS */}
+          {/* -------------------------------------------------
+             CUSTOMER LINKS
+          ------------------------------------------------- */}
           {currentUser?.role === "Customer" && (
             <>
               <li><Link to="/create-new-ticket">Create New Ticket</Link></li>
             </>
           )}
 
+          {/* -------------------------------------------------
+             SHARED LINKS
+          ------------------------------------------------- */}
           <li><Link to="/update-profile">Update Profile</Link></li>
 
           {displayName && (
@@ -78,17 +104,13 @@ function NavigationBar() {
             </li>
           )}
 
+          {/* -------------------------------------------------
+             LOGOUT BUTTON
+          ------------------------------------------------- */}
           <li>
             <button
               onClick={handleLogout}
               className="navLink logoutButton"
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                font: "inherit",
-                color: "inherit",
-              }}
             >
               Logout
             </button>
