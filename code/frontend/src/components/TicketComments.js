@@ -1,5 +1,6 @@
 // src/components/TicketComments.jsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTickets } from "../TicketsContext";
 import "./TicketComments.css";
 
@@ -10,21 +11,21 @@ const API_BASE =
 
 export default function TicketComments({ ticketId }) {
   const { currentUser } = useTickets();
+  const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState("");
 
   // --------------------------------------------------------
-  // Load comments for the ticket
+  // Load comments from ticket
   // --------------------------------------------------------
   useEffect(() => {
     const loadComments = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE}/api/tickets/${ticketId}`,
-          { credentials: "include" }
-        );
+        const response = await fetch(`${API_BASE}/api/tickets/${ticketId}`, {
+          credentials: "include",
+        });
 
         const data = await response.json();
 
@@ -45,7 +46,7 @@ export default function TicketComments({ ticketId }) {
   // Submit a new comment
   // --------------------------------------------------------
   const submitComment = async () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim()) return; // prevent empty comments
 
     try {
       const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
@@ -53,16 +54,23 @@ export default function TicketComments({ ticketId }) {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: newComment,  // **** FIXED: backend expects "text"
+          text: newComment, // backend expects `text`
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      // Append the new comment to the list
+      // Add new comment to UI
       setComments((prev) => [...prev, data]);
       setNewComment("");
+
+      // ----------------------------------------------------
+      // Redirect user based on role after submit
+      // ----------------------------------------------------
+      if (currentUser.role === "Admin") navigate("/admin-home");
+      else if (currentUser.role === "Agent") navigate("/agent-home");
+      else navigate("/home");
 
     } catch (err) {
       setError(err.message || "Failed to submit comment");
@@ -83,9 +91,17 @@ export default function TicketComments({ ticketId }) {
         {comments.map((c, index) => (
           <li key={index}>
             <strong>{c.authorName || "Unknown User"}</strong>
-            <span style={{ marginLeft: "10px", fontSize: "0.8rem", opacity: 0.7 }}>
+
+            <span
+              style={{
+                marginLeft: "10px",
+                fontSize: "0.8rem",
+                opacity: 0.7,
+              }}
+            >
               {new Date(c.createdAt).toLocaleString()}
             </span>
+
             <p>{c.text}</p>
           </li>
         ))}
@@ -99,9 +115,7 @@ export default function TicketComments({ ticketId }) {
           onChange={(e) => setNewComment(e.target.value)}
         />
 
-        <button onClick={submitComment}>
-          Post Comment
-        </button>
+        <button onClick={submitComment}>Post Comment</button>
       </div>
     </div>
   );

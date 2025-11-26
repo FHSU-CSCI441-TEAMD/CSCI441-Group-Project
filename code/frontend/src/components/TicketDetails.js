@@ -157,8 +157,7 @@ function TicketDetails() {
                     >
                       <option value="Open">Open</option>
                       <option value="In Progress">In Progress</option>
-                      <option value="Waiting on Customer">Waiting on Customer</option>
-                      <option value="Closed">Closed</option>
+                      <option value="Resolved">Resolved</option>
                     </select>
                   ) : (
                     <span className={`status ${ticket.status?.toLowerCase()}`}>
