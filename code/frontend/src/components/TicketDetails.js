@@ -13,15 +13,20 @@ const API_BASE =
 
 function TicketDetails() {
   const { id } = useParams();
-  const { currentUser } = useTickets();
+  const { currentUser, updateTicket } = useTickets();
 
   const [ticket, setTicket] = useState(null);
-  const [agents, setAgents] = useState([]); // Admin-only agent list
+  const [agents, setAgents] = useState([]);
   const [error, setError] = useState("");
 
-  // ------------------------------------
-  // Fetch ticket details + agent list
-  // ------------------------------------
+  // Determine home route by role
+  const getHomeRoute = () => {
+    if (currentUser?.role === "Admin") return "/admin-home";
+    if (currentUser?.role === "Agent") return "/agent-home";
+    return "/home";
+  };
+
+  // Fetch the ticket
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -34,7 +39,6 @@ function TicketDetails() {
         const data = await res.json();
         setTicket(data);
 
-        // If Admin → Load list of agents
         if (currentUser?.role === "Admin") {
           const agentRes = await fetch(`${API_BASE}/api/users/agents`, {
             credentials: "include",
@@ -45,7 +49,6 @@ function TicketDetails() {
             setAgents(agentsData);
           }
         }
-
       } catch (err) {
         console.error(err);
         setError("Unable to load ticket details.");
@@ -53,81 +56,30 @@ function TicketDetails() {
     };
 
     fetchTicket();
-  }, [id, currentUser?.role]);
+  }, [id, currentUser?.role, API_BASE]);
 
   if (error) return <p>{error}</p>;
   if (!ticket) return <p>Loading...</p>;
 
-  // ------------------------------------
-  // Role Helper Logic
-  // ------------------------------------
   const isAdmin = currentUser?.role === "Admin";
   const isAssignedAgent =
     currentUser?.role === "Agent" &&
-    ticket.assignedAgentId === currentUser?.id;
+    ticket.assignedAgentId === currentUser?._id;
 
   const canEditStatus = isAdmin || isAssignedAgent;
 
-  // ------------------------------------
-  // Update Status
-  // ------------------------------------
+  // Update status (uses context)
   const updateStatus = async (newStatus) => {
-    try {
-      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message || "Failed to update status.");
-        return;
-      }
-
-      // Update UI locally
-      setTicket((prev) => ({ ...prev, status: newStatus }));
-    } catch (err) {
-      console.error(err);
-      alert("Network error updating status.");
-    }
+    const updated = await updateTicket(ticket._id, { status: newStatus });
+    if (updated) setTicket(updated);
   };
 
-  // ------------------------------------
-  // Admin: Reassign Agent
-  // ------------------------------------
+  // Update assigned agent (uses context)
   const updateAssignedAgent = async (agentId) => {
-    try {
-      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agentId }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message || "Failed to reassign ticket");
-        return;
-      }
-
-      // Update UI with new agent
-      setTicket((prev) => ({
-        ...prev,
-        assignedAgentId: agentId,
-        agent: data.assignedAgent,
-      }));
-
-    } catch (err) {
-      console.error(err);
-      alert("Network error reassigning agent.");
-    }
+    const updated = await updateTicket(ticket._id, { agentId });
+    if (updated) setTicket(updated);
   };
 
-  // ------------------------------------
-  // UI
-  // ------------------------------------
   return (
     <>
       <NavigationBar />
@@ -138,14 +90,11 @@ function TicketDetails() {
 
           <table className="ticket-info-table">
             <tbody>
-
-              {/* Title */}
               <tr>
                 <th>Title:</th>
                 <td>{ticket.title}</td>
               </tr>
 
-              {/* Status */}
               <tr>
                 <th>Status:</th>
                 <td>
@@ -167,7 +116,6 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Priority */}
               <tr>
                 <th>Priority:</th>
                 <td className={`priority ${ticket.priority?.toLowerCase()}`}>
@@ -175,13 +123,11 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Assigned Agent */}
               <tr>
                 <th>Assigned Agent:</th>
                 <td>
                   {ticket.agent?.name || "Unassigned"}
 
-                  {/* Admin-only reassignment dropdown */}
                   {isAdmin && (
                     <select
                       className="assign-dropdown"
@@ -200,19 +146,16 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Created */}
               <tr>
                 <th>Created:</th>
                 <td>{new Date(ticket.createdAt).toLocaleString()}</td>
               </tr>
 
-              {/* Updated */}
               <tr>
                 <th>Updated:</th>
                 <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
               </tr>
 
-              {/* Description */}
               <tr className="desc-row">
                 <th>Description:</th>
                 <td className="desc-cell">
@@ -222,11 +165,10 @@ function TicketDetails() {
             </tbody>
           </table>
 
-          {/* Comments Section */}
           <TicketComments ticketId={ticket._id} />
 
-          {/* Back Button */}
-          <Link to="/home" className="back-button">
+          {/* Fixed Back Button */}
+          <Link to={getHomeRoute()} className="back-button">
             ← Back to Tickets
           </Link>
         </div>

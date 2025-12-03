@@ -1,39 +1,49 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
+import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar";
 import "./AdminReports.css";
 
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://csci441-group-project.onrender.com"
+    : "http://localhost:5000";
+
 export default function AdminReports() {
   const { tickets } = useTickets();
+  const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
   const [agentFilter, setAgentFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
 
-  // Extract unique agents for dropdown
-  const agents = useMemo(() => {
-    const list = tickets
-      .filter((t) => t.agent)
-      .map((t) => ({
-        id: t.agent._id,
-        name: t.agent.name,
-        email: t.agent.email,
-      }));
+  const [agents, setAgents] = useState([]);
 
-    const unique = [];
-    const seen = new Set();
+  // ===========================
+  // Fetch ALL agents from backend
+  // ===========================
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/users/agents`, {
+          credentials: "include",
+        });
 
-    for (const a of list) {
-      if (!seen.has(a.id)) {
-        unique.push(a);
-        seen.add(a.id);
+        if (res.ok) {
+          const data = await res.json();
+          setAgents(data);
+        }
+      } catch (err) {
+        console.error("Error fetching agents:", err);
       }
-    }
+    };
 
-    return unique;
-  }, [tickets]);
+    fetchAgents();
+  }, []);
 
+  // ===========================
   // Apply filters
+  // ===========================
   const filteredTickets = useMemo(() => {
     return tickets.filter((t) => {
       if (statusFilter && t.status !== statusFilter) return false;
@@ -43,7 +53,9 @@ export default function AdminReports() {
     });
   }, [tickets, statusFilter, priorityFilter, agentFilter]);
 
-  // Summary count by status
+  // ===========================
+  // Summary counts
+  // ===========================
   const statusSummary = useMemo(() => {
     const summary = {};
     filteredTickets.forEach((t) => {
@@ -52,6 +64,16 @@ export default function AdminReports() {
     return summary;
   }, [filteredTickets]);
 
+  // ===========================
+  // Navigate to ticket details
+  // ===========================
+  const openTicket = (id) => {
+    navigate(`/ticket/${id}`);
+  };
+
+  // ===========================
+  // UI
+  // ===========================
   return (
     <div>
       <NavigationBar />
@@ -72,9 +94,8 @@ export default function AdminReports() {
             >
               <option value="">All</option>
               <option value="Open">Open</option>
-              <option value="Pending">Pending</option>
               <option value="In Progress">In Progress</option>
-              <option value="Closed">Closed</option>
+              <option value="Resolved">Resolved</option>
             </select>
           </div>
 
@@ -103,14 +124,14 @@ export default function AdminReports() {
             >
               <option value="">All</option>
               {agents.map((a) => (
-                <option key={a.id} value={a.id}>
+                <option key={a._id} value={a._id}>
                   {a.name} ({a.email})
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Reset Button */}
+          {/* Reset button */}
           <button
             className="reset-btn"
             onClick={() => {
@@ -123,7 +144,7 @@ export default function AdminReports() {
           </button>
         </div>
 
-        {/* Summary */}
+        {/* Summary Box */}
         <div className="summary-box">
           <h2>Summary</h2>
           {Object.keys(statusSummary).length === 0 ? (
@@ -153,7 +174,11 @@ export default function AdminReports() {
 
           <tbody>
             {filteredTickets.map((t) => (
-              <tr key={t._id}>
+              <tr
+                key={t._id}
+                className="clickable-report-row"
+                onClick={() => openTicket(t._id)}
+              >
                 <td>{t._id}</td>
                 <td>{t.title}</td>
                 <td>{t.status}</td>

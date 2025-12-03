@@ -8,17 +8,18 @@ const API_BASE =
 
 const TicketsCtx = createContext();
 
-
 export function TicketsProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [tickets, setTickets] = useState([]);
 
-  // ✅ Get current user profile using cookie-based auth
+  // =========================
+  //  REFRESH CURRENT USER
+  // =========================
   const refreshCurrentUser = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/users/profile`, {
         method: "GET",
-        credentials: "include", // 👈 ensures cookies are sent
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -40,7 +41,9 @@ export function TicketsProvider({ children }) {
     }
   };
 
-  // ✅ Fetch tickets for the current user
+  // =========================
+  //  FETCH ALL TICKETS
+  // =========================
   const fetchTickets = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/tickets`, {
@@ -49,14 +52,57 @@ export function TicketsProvider({ children }) {
       if (!res.ok) throw new Error("Failed to fetch tickets");
 
       const data = await res.json();
-      console.log("🎟️ Tickets fetched from backend:", data);
+      console.log("🎟️ Tickets fetched:", data);
       setTickets(data);
     } catch (err) {
       console.error("❌ fetchTickets error:", err);
     }
   };
 
-  // ✅ Create ticket (cookie-based authentication)
+  // ============================================================
+  //  NEW: Update only ONE ticket in context (local update helper)
+  // ============================================================
+  const updateTicketInContext = (updatedTicket) => {
+    setTickets((prevTickets) =>
+      prevTickets.map((t) =>
+        t._id === updatedTicket._id ? updatedTicket : t
+      )
+    );
+  };
+
+  // ============================================================
+  //  NEW: Update ticket on backend + update context + refetch
+  // ============================================================
+  const updateTicket = async (ticketId, updateData) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticketId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(updateData),
+      });
+
+      if (!res.ok) throw new Error("Failed to update ticket");
+
+      const updated = await res.json();
+      console.log("🔄 Ticket updated:", updated);
+
+      // Update locally
+      updateTicketInContext(updated);
+
+      // Optional but recommended: ensure perfect sync
+      fetchTickets();
+
+      return updated;
+    } catch (err) {
+      console.error("❌ updateTicket error:", err);
+      return null;
+    }
+  };
+
+  // =========================
+  //  CREATE TICKET
+  // =========================
   const createTicket = async (ticketData) => {
     try {
       const res = await fetch(`${API_BASE}/api/tickets`, {
@@ -69,14 +115,10 @@ export function TicketsProvider({ children }) {
       if (!res.ok) throw new Error(`Failed to create ticket (${res.status})`);
 
       const savedTicket = await res.json();
-
-      // Instantly display the new ticket
       setTickets((prev) => [savedTicket, ...prev]);
+      fetchTickets();
 
-      // Re-fetch to ensure backend sync
-      await fetchTickets();
-
-      console.log("🧾 Ticket created successfully:", savedTicket);
+      console.log("🧾 Ticket created:", savedTicket);
       return savedTicket;
     } catch (error) {
       console.error("❌ Failed to create ticket:", error);
@@ -84,55 +126,53 @@ export function TicketsProvider({ children }) {
     }
   };
 
-  // ✅ Load stored user and tickets on app start
+  // =========================
+  //  INITIAL LOAD
+  // =========================
   useEffect(() => {
     const init = async () => {
       let user = null;
+
       try {
         const storedUser = localStorage.getItem("user");
         if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
-
-          // UPDATE HERE
-          // 1. Set user from storage FIRST
           const parsedUser = JSON.parse(storedUser);
           setCurrentUser(parsedUser);
 
-          // 2. ONLY THEN, try to refresh the user
-          user = await refreshCurrentUser(); 
+          user = await refreshCurrentUser();
         }
-      } catch {
-        /* ignore corrupted data */
-      }
+      } catch {}
 
-      // 3. Only fetch tickets if the user was successfully refreshed
       if (user) await fetchTickets();
     };
 
     init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ✅ Keep user synced in localStorage
+  // =========================
+  //  SYNC LOCALSTORAGE
+  // =========================
   useEffect(() => {
     if (currentUser) localStorage.setItem("user", JSON.stringify(currentUser));
     else localStorage.removeItem("user");
   }, [currentUser]);
 
-  // ✅ NEW: Auto-refresh tickets when user logs in or logs out
+  // =========================
+  //  AUTO-REFRESH TICKETS ON USER CHANGE
+  // =========================
   useEffect(() => {
-    const syncTickets = async () => {
-      if (currentUser) {
-        console.log("🎟️ User logged in — refreshing tickets...");
-        await fetchTickets();
-      } else {
-        console.log("🚪 User logged out — clearing tickets.");
-        setTickets([]);
-      }
-    };
-    syncTickets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (currentUser) {
+      console.log("🎟️ User logged in — refreshing tickets...");
+      fetchTickets();
+    } else {
+      console.log("🚪 User logged out — clearing tickets.");
+      setTickets([]);
+    }
   }, [currentUser]);
 
+  // =========================
+  //  PROVIDE CONTEXT
+  // =========================
   return (
     <TicketsCtx.Provider
       value={{
@@ -143,6 +183,8 @@ export function TicketsProvider({ children }) {
         setTickets,
         createTicket,
         fetchTickets,
+        updateTicket,          
+        updateTicketInContext,  
       }}
     >
       {children}
@@ -153,4 +195,3 @@ export function TicketsProvider({ children }) {
 export function useTickets() {
   return useContext(TicketsCtx);
 }
-

@@ -67,13 +67,6 @@ function AgentNavigationBar() {
             <button
               onClick={handleLogout}
               className="navLink logoutButton"
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                font: "inherit",
-                color: "inherit",
-              }}
             >
               Logout
             </button>

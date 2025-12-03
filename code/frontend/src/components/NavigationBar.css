@@ -61,11 +61,18 @@
 .navButtonLikeLink {
   background: none;
   border: none;
-  font: inherit;
-  color: inherit;
+  outline: none;
   cursor: pointer;
   padding: 0;
+  color: inherit;
+  font: inherit;
 }
+
+.navButtonLikeLink:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 
 .userName {
   font-weight: 500;
