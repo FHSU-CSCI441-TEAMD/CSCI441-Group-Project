@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../NavigationBar";
 import "./AdminReports.css";
 
 export default function AdminReports() {
