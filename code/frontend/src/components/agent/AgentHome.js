@@ -1,18 +1,21 @@
 import React from 'react';
 import AgentNavigationBar from './AgentNavigationBar';
 import TicketsTable from '../TicketsTable';
+import MyTicketsSummary from '../MyTicketsSummary';
 import { useTickets } from '../../TicketsContext';
 
 function AgentHome() {
   const { tickets, currentUser } = useTickets();
 
-  const myAssignedTickets = currentUser
-    ? tickets.filter(t => t.agent === currentUser.id)
+  // Filter tickets for the logged-in user
+  const myTickets = currentUser
+    ? tickets.filter(t => t.userId === currentUser.id)
     : [];
 
   return (
     <>
       <AgentNavigationBar />
+      <MyTicketsSummary />
       <TicketsTable tickets={myAssignedTickets} />
     </>
   );
