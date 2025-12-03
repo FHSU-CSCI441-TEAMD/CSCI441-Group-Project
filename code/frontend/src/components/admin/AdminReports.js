@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useTickets } from "../TicketsContext";
+import { useTickets } from "../../TicketsContext";
 import NavigationBar from "./NavigationBar";
 import "./AdminReports.css";
 
