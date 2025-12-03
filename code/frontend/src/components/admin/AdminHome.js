@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+// src/components/admin/AdminHome.js
+import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
 import NavigationBar from "../NavigationBar";
 import "../NavigationBar.css";
@@ -14,14 +15,40 @@ export default function AdminHome() {
   const { currentUser, tickets, fetchTickets } = useTickets();
   const navigate = useNavigate();
 
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
     if (!currentUser || currentUser.role !== "Admin") {
       navigate("/");
       return;
     }
 
-    fetchTickets();     // always refresh when loading page
-  }, [currentUser?._id]);  // minimal dependency
+    // Always refresh ticket list
+    fetchTickets();
+
+    // Load all users since backend does NOT populate agent field
+    const loadUsers = async () => {
+      const res = await fetch(`${API_BASE}/api/users`, {
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      }
+    };
+
+    loadUsers();
+  }, [currentUser?._id]);
+
+  // Build map of agentId → agent details
+  const agentMap = useMemo(() => {
+    const map = {};
+    users.forEach((u) => {
+      map[u._id] = u;
+    });
+    return map;
+  }, [users]);
 
   return (
     <div>
@@ -42,29 +69,39 @@ export default function AdminHome() {
           </thead>
 
           <tbody>
-            {tickets.map((t) => (
-              <tr
-                key={t._id}
-                onClick={() => navigate(`/ticket/${t._id}`)} // click to open
-              >
-                <td>{t._id}</td>
-                <td>{t.title}</td>
-                <td>{t.status}</td>
-                <td>{t.agent?.email || "Unassigned"}</td>
+            {tickets.map((t) => {
+              // Lookup agent object using agent ID from backend
+              const agent = agentMap[t.agent];
 
-                <td>
-                  <button
-                    className="admin-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/admin-reassign/${t._id}`);
-                    }}
-                  >
-                    Reassign
-                  </button>
-                </td>
-              </tr>
-            ))}
+              return (
+                <tr
+                  key={t._id}
+                  onClick={() => navigate(`/ticket/${t._id}`)}
+                >
+                  <td>{t._id}</td>
+                  <td>{t.title}</td>
+                  <td>{t.status}</td>
+
+                  <td>
+                    {agent
+                      ? `${agent.name} (${agent.email})`
+                      : "Unassigned"}
+                  </td>
+
+                  <td>
+                    <button
+                      className="admin-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/admin-reassign/${t._id}`);
+                      }}
+                    >
+                      Reassign
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
