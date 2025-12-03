@@ -16,6 +16,7 @@ export default function AdminReassignTicket() {
 
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!currentUser || currentUser.role !== "Admin") {
@@ -26,23 +27,50 @@ export default function AdminReassignTicket() {
   }, [currentUser]);
 
   const loadAgents = async () => {
-    const res = await fetch(`${API_BASE}/api/users`, {
-      credentials: "include",
-    });
-    const all = await res.json();
-    setAgents(all.filter((u) => u.role === "Agent"));
+    try {
+      const res = await fetch(`${API_BASE}/api/users`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to load agents");
+
+      const all = await res.json();
+      setAgents(all.filter((u) => u.role === "Agent"));
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load agent list.");
+    }
   };
 
   const submitReassign = async () => {
-    await fetch(`${API_BASE}/api/tickets/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ agentId: selectedAgent }),
-    });
+    if (!selectedAgent) {
+      alert("Please select an agent before saving.");
+      return;
+    }
 
-    await fetchTickets();
-    navigate("/admin-home");
+    try {
+      const res = await fetch(`${API_BASE}/api/tickets/${id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentId: selectedAgent }),
+      });
+
+      const data = await res.json();
+      console.log("Reassign Response:", data);
+
+      if (!res.ok) {
+        alert(data.message || "Failed to reassign ticket.");
+        return;
+      }
+
+      // Successful update
+      await fetchTickets();
+      navigate("/admin-home");
+    } catch (err) {
+      console.error("Reassign error:", err);
+      alert("Network error while saving.");
+    }
   };
 
   return (
@@ -52,6 +80,9 @@ export default function AdminReassignTicket() {
       <div className="reassign-container">
         <h2 className="reassign-title">Reassign Ticket</h2>
 
+        {/* Error Display */}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         <select
           value={selectedAgent}
           onChange={(e) => setSelectedAgent(e.target.value)}
@@ -60,7 +91,7 @@ export default function AdminReassignTicket() {
           <option value="">Select an Agent</option>
           {agents.map((a) => (
             <option key={a._id} value={a._id}>
-              {a.email}
+              {a.name} ({a.email})
             </option>
           ))}
         </select>
