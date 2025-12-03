@@ -73,7 +73,7 @@ function TicketDetails() {
   // ------------------------------------
   const updateStatus = async (newStatus) => {
     try {
-      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}/status`, {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ function TicketDetails() {
   // ------------------------------------
   const updateAssignedAgent = async (agentId) => {
     try {
-      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}/assign`, {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
