@@ -52,8 +52,8 @@ export default function Login() {
 
       // ✅ Redirect user
       const role = data.user?.role?.toLowerCase();
-      if (role === "admin") navigate("/admin");
-      else if (role === "agent") navigate("/agent");
+      if (role === "admin") navigate("/admin-home");
+      else if (role === "agent") navigate("/agent-home");
       else navigate("/home");
     } catch (err) {
       console.error("❌ Login error:", err);
