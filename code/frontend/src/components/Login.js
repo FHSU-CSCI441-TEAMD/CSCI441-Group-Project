@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import { useTickets } from "../TicketsContext"; // ✅ import context
+import { useTickets } from "../TicketsContext";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -16,7 +16,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ bring in refresh + fetch from context
   const { setCurrentUser, refreshCurrentUser, fetchTickets } = useTickets();
 
   const handleSubmit = async (e) => {
@@ -25,11 +24,12 @@ export default function Login() {
     setLoading(true);
 
     try {
+      // LOGIN REQUEST
       const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include", // 👈 send cookies
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -40,21 +40,21 @@ export default function Login() {
       const data = await response.json();
       console.log("✅ Login success:", data);
 
-      // ✅ Persist user info locally
+      // STORE USER FROM LOGIN RESPONSE
       localStorage.setItem("user", JSON.stringify(data.user));
       setCurrentUser(data.user);
 
-      // ✅ Immediately refresh current user from backend (verifies cookie)
-      await refreshCurrentUser();
+      // 🚀 REDIRECT IMMEDIATELY using the login response
+      const role = data.user?.role;
 
-      // ✅ Fetch user's tickets right after login
-      await fetchTickets();
-
-      // ✅ Redirect user
-      const role = data.user?.role?.toLowerCase();
       if (role === "Admin") navigate("/admin-home");
       else if (role === "Agent") navigate("/agent-home");
       else navigate("/home");
+
+      // 🔄 Now run these AFTER redirect — they won't block navigation
+      refreshCurrentUser();
+      fetchTickets();
+
     } catch (err) {
       console.error("❌ Login error:", err);
       setError(err.message || "Login failed. Please try again.");
@@ -71,9 +71,7 @@ export default function Login() {
 
         {error && <p className="error-message">{error}</p>}
 
-        <label htmlFor="email" className="form-label">
-          Email
-        </label>
+        <label htmlFor="email" className="form-label">Email</label>
         <input
           id="email"
           type="email"
@@ -84,9 +82,7 @@ export default function Login() {
           required
         />
 
-        <label htmlFor="password" className="form-label">
-          Password
-        </label>
+        <label htmlFor="password" className="form-label">Password</label>
         <input
           id="password"
           type="password"
