@@ -19,8 +19,9 @@ export default function AdminHome() {
       navigate("/");
       return;
     }
-    fetchTickets();
-  }, [currentUser]);
+
+    fetchTickets();     // always refresh when loading page
+  }, [currentUser?._id]);  // minimal dependency
 
   return (
     <div>
@@ -42,7 +43,10 @@ export default function AdminHome() {
 
           <tbody>
             {tickets.map((t) => (
-              <tr key={t._id}>
+              <tr
+                key={t._id}
+                onClick={() => navigate(`/ticket/${t._id}`)} // click to open
+              >
                 <td>{t._id}</td>
                 <td>{t.title}</td>
                 <td>{t.status}</td>
@@ -51,7 +55,10 @@ export default function AdminHome() {
                 <td>
                   <button
                     className="admin-btn"
-                    onClick={() => navigate(`/admin-reassign/${t._id}`)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/admin-reassign/${t._id}`);
+                    }}
                   >
                     Reassign
                   </button>

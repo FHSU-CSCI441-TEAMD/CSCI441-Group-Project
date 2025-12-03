@@ -26,7 +26,7 @@ function TicketDetails() {
     return "/home";
   };
 
-  // Fetch the ticket
+  // Fetch ticket + agents (if admin)
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -39,14 +39,16 @@ function TicketDetails() {
         const data = await res.json();
         setTicket(data);
 
+        // Admin → fetch all users and filter agents
         if (currentUser?.role === "Admin") {
-          const agentRes = await fetch(`${API_BASE}/api/users/agents`, {
+          const usersRes = await fetch(`${API_BASE}/api/users`, {
             credentials: "include",
           });
 
-          if (agentRes.ok) {
-            const agentsData = await agentRes.json();
-            setAgents(agentsData);
+          if (usersRes.ok) {
+            const allUsers = await usersRes.json();
+            const onlyAgents = allUsers.filter((u) => u.role === "Agent");
+            setAgents(onlyAgents);
           }
         }
       } catch (err) {
@@ -56,25 +58,27 @@ function TicketDetails() {
     };
 
     fetchTicket();
-  }, [id, currentUser?.role, API_BASE]);
+  }, [id, currentUser?.role]);
 
   if (error) return <p>{error}</p>;
   if (!ticket) return <p>Loading...</p>;
 
+  // Permissions
   const isAdmin = currentUser?.role === "Admin";
+
   const isAssignedAgent =
     currentUser?.role === "Agent" &&
-    ticket.assignedAgentId === currentUser?._id;
+    ticket.agent?._id === currentUser?._id;
 
   const canEditStatus = isAdmin || isAssignedAgent;
 
-  // Update status (uses context)
+  // Update Status
   const updateStatus = async (newStatus) => {
     const updated = await updateTicket(ticket._id, { status: newStatus });
     if (updated) setTicket(updated);
   };
 
-  // Update assigned agent (uses context)
+  // Admin: Update Assigned Agent
   const updateAssignedAgent = async (agentId) => {
     const updated = await updateTicket(ticket._id, { agentId });
     if (updated) setTicket(updated);
@@ -90,11 +94,13 @@ function TicketDetails() {
 
           <table className="ticket-info-table">
             <tbody>
+              {/* Title */}
               <tr>
                 <th>Title:</th>
                 <td>{ticket.title}</td>
               </tr>
 
+              {/* Status */}
               <tr>
                 <th>Status:</th>
                 <td>
@@ -116,6 +122,7 @@ function TicketDetails() {
                 </td>
               </tr>
 
+              {/* Priority */}
               <tr>
                 <th>Priority:</th>
                 <td className={`priority ${ticket.priority?.toLowerCase()}`}>
@@ -123,6 +130,7 @@ function TicketDetails() {
                 </td>
               </tr>
 
+              {/* Assigned Agent */}
               <tr>
                 <th>Assigned Agent:</th>
                 <td>
@@ -131,14 +139,14 @@ function TicketDetails() {
                   {isAdmin && (
                     <select
                       className="assign-dropdown"
-                      value={ticket.assignedAgentId || ""}
+                      value={ticket.agent?._id || ""}
                       onChange={(e) => updateAssignedAgent(e.target.value)}
                       style={{ marginLeft: "12px" }}
                     >
                       <option value="">-- Assign Agent --</option>
                       {agents.map((agent) => (
                         <option key={agent._id} value={agent._id}>
-                          {agent.name}
+                          {agent.name} ({agent.email})
                         </option>
                       ))}
                     </select>
@@ -146,16 +154,19 @@ function TicketDetails() {
                 </td>
               </tr>
 
+              {/* Created */}
               <tr>
                 <th>Created:</th>
                 <td>{new Date(ticket.createdAt).toLocaleString()}</td>
               </tr>
 
+              {/* Updated */}
               <tr>
                 <th>Updated:</th>
                 <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
               </tr>
 
+              {/* Description */}
               <tr className="desc-row">
                 <th>Description:</th>
                 <td className="desc-cell">
@@ -167,7 +178,6 @@ function TicketDetails() {
 
           <TicketComments ticketId={ticket._id} />
 
-          {/* Fixed Back Button */}
           <Link to={getHomeRoute()} className="back-button">
             ← Back to Tickets
           </Link>

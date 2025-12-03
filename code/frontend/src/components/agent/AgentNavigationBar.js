@@ -66,7 +66,7 @@ function AgentNavigationBar() {
           <li>
             <button
               onClick={handleLogout}
-              className="navLink logoutButton"
+              className="logoutButton"
             >
               Logout
             </button>

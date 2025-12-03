@@ -20,19 +20,23 @@ export default function AdminReports() {
   const [agents, setAgents] = useState([]);
 
   // ===========================
-  // Fetch ALL agents from backend
+  // Fetch ALL users, filter Agents
   // ===========================
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/users/agents`, {
+        const res = await fetch(`${API_BASE}/api/users`, {
           credentials: "include",
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          setAgents(data);
+        if (!res.ok) {
+          console.error("Failed to fetch users for agent list");
+          return;
         }
+
+        const allUsers = await res.json();
+        const onlyAgents = allUsers.filter((u) => u.role === "Agent");
+        setAgents(onlyAgents);
       } catch (err) {
         console.error("Error fetching agents:", err);
       }
@@ -71,9 +75,6 @@ export default function AdminReports() {
     navigate(`/ticket/${id}`);
   };
 
-  // ===========================
-  // UI
-  // ===========================
   return (
     <div>
       <NavigationBar />
@@ -83,7 +84,6 @@ export default function AdminReports() {
 
         {/* Filters */}
         <div className="filter-section">
-
           {/* Status Filter */}
           <div>
             <label>Status:</label>
@@ -125,7 +125,7 @@ export default function AdminReports() {
               <option value="">All</option>
               {agents.map((a) => (
                 <option key={a._id} value={a._id}>
-                  {a.name} ({a.email})
+                  {a.name || a.email} ({a.email})
                 </option>
               ))}
             </select>
@@ -183,7 +183,7 @@ export default function AdminReports() {
                 <td>{t.title}</td>
                 <td>{t.status}</td>
                 <td>{t.priority}</td>
-                <td>{t.agent?.name || "Unassigned"}</td>
+                <td>{t.agent?.name || t.agent?.email || "Unassigned"}</td>
               </tr>
             ))}
           </tbody>

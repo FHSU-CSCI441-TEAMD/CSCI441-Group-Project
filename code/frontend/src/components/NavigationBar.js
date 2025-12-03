@@ -110,7 +110,7 @@ function NavigationBar() {
           <li>
             <button
               onClick={handleLogout}
-              className="navLink logoutButton"
+              className="logoutButton"
             >
               Logout
             </button>
