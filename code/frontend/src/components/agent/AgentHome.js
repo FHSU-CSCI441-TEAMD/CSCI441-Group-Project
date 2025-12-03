@@ -16,7 +16,7 @@ function AgentHome() {
     <>
       <AgentNavigationBar />
       <MyTicketsSummary />
-      <TicketsTable tickets={myAssignedTickets} />
+      <TicketsTable tickets={myTickets} />
     </>
   );
 }
