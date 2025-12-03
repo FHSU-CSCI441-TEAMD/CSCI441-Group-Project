@@ -38,23 +38,26 @@ export default function Login() {
       }
 
       const data = await response.json();
-      console.log("✅ Login success:", data);
-      console.log("LOGIN RESPONSE USER:", data.user);
-      console.log("LOGIN RESPONSE ROLE:", data.user?.role);
+      console.log("Login success:", data);
+      console.log("LOGIN RESPONSE USER:", data);
+      console.log("LOGIN RESPONSE ROLE:", data.role);
 
+      // Store user DIRECTLY (backend does NOT send {user: ...})
+      localStorage.setItem("user", JSON.stringify(data));
+      setCurrentUser(data);
 
-      // STORE USER FROM LOGIN RESPONSE
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setCurrentUser(data.user);
+      // Redirect IMMEDIATELY using correct role
+      const role = data.role;
 
-      // 🚀 REDIRECT IMMEDIATELY using the login response
-      const role = data.user?.role;
+      if (role === "Admin") {
+        navigate("/admin-home");
+      } else if (role === "Agent") {
+        navigate("/agent-home");
+      } else {
+        navigate("/home");
+      }
 
-      if (role === "Admin") navigate("/admin-home");
-      else if (role === "Agent") navigate("/agent-home");
-      else navigate("/home");
-
-      // 🔄 Now run these AFTER redirect — they won't block navigation
+      // 🔄 Run AFTER redirect (non-blocking)
       refreshCurrentUser();
       fetchTickets();
 
@@ -74,7 +77,9 @@ export default function Login() {
 
         {error && <p className="error-message">{error}</p>}
 
-        <label htmlFor="email" className="form-label">Email</label>
+        <label htmlFor="email" className="form-label">
+          Email
+        </label>
         <input
           id="email"
           type="email"
@@ -85,7 +90,9 @@ export default function Login() {
           required
         />
 
-        <label htmlFor="password" className="form-label">Password</label>
+        <label htmlFor="password" className="form-label">
+          Password
+        </label>
         <input
           id="password"
           type="password"
