@@ -39,6 +39,9 @@ export default function Login() {
 
       const data = await response.json();
       console.log("✅ Login success:", data);
+      console.log("LOGIN RESPONSE USER:", data.user);
+      console.log("LOGIN RESPONSE ROLE:", data.user?.role);
+
 
       // STORE USER FROM LOGIN RESPONSE
       localStorage.setItem("user", JSON.stringify(data.user));
