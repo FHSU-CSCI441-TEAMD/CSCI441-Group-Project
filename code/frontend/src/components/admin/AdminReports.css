@@ -1,110 +1,154 @@
-/* Container */
+/* =========================================
+   Admin Reports - Full Page Container
+========================================= */
 .admin-reports-container {
-  padding: 20px;
-  margin-top: 80px;
-  font-family: Arial, Helvetica, sans-serif;
+  padding: 120px 40px 40px;
+  max-width: 1100px;
+  margin: auto;
+  font-family: Arial, sans-serif;
 }
 
 /* Page title */
 .admin-reports-title {
-  font-size: 28px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: center;
 }
 
-/* Filter section: row of dropdowns centered */
+/* =========================================
+   FILTER SECTION
+========================================= */
+
+/* Filters Row */
 .filter-section {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  align-items: flex-end; /* Aligns everything on the same baseline */
+  gap: 24px;
+  margin-bottom: 25px;
   flex-wrap: wrap;
-  margin-bottom: 10px;
 }
 
-/* Each filter group */
-.filter-section > div {
+/* Each filter group (label + dropdown) */
+.filter-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 }
 
-.filter-section label {
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
+/* Standard dropdown styling */
 .filter-select {
-  padding: 6px;
-  font-size: 14px;
-  min-width: 160px;
+  width: 180px;
+  padding: 8px;
+  height: 42px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
 }
 
-/* Reset button container BELOW filters, centered */
-.reset-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 10px 0 20px;
-}
-
-/* Reset button */
+/* Reset button — now matches exact dropdown height and alignment */
 .reset-btn {
-  padding: 7px 16px;
+  padding: 0 20px;
+  height: 42px;               /* EXACT match with dropdowns */
   background-color: #444;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+
+  /* Perfect centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reset-btn:hover {
-  background-color: #333;
+  background-color: #222;
 }
 
-/* Make clickable table rows show a pointer cursor */
-.clickable-report-row {
-  cursor: pointer;
+/* Force alignment if button wraps to next row */
+@media (min-width: 769px) {
+  .reset-btn {
+    align-self: flex-end;  /* Aligns with the dropdown baselines on desktop */
+  }
 }
 
-.clickable-report-row:hover {
-  background-color: #f0f0f0; /* optional hover highlight */
-}
-
-/* Summary section */
+/* =========================================
+   SUMMARY BOX
+========================================= */
 .summary-box {
-  margin-bottom: 20px;
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .summary-box h2 {
-  font-size: 20px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 
-/* Tickets Table */
+/* Remove bullets & center items */
+.summary-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.summary-box li {
+  font-size: 1rem;
+  margin: 6px 0;
+}
+
+/* =========================================
+   TICKETS TABLE
+========================================= */
 .report-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border: 1px solid #ccc;
+  margin-top: 10px;
 }
 
 .report-table th,
 .report-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
 .report-table th {
-  background-color: #eee;
+  background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.report-table tr:nth-child(even) {
+.report-table tr:hover {
   background-color: #fafafa;
+  cursor: pointer;
 }
 
-.report-table tr:hover {
-  background-color: #f0f0f0;
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+  .admin-reports-container {
+    padding: 100px 20px 20px;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .reset-btn {
+    width: 100%;
+  }
 }
