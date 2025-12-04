@@ -1,3 +1,4 @@
+// UPDATED AdminReports.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +11,7 @@ const API_BASE =
     : "http://localhost:5000";
 
 export default function AdminReports() {
-  const { tickets } = useTickets();
+  const { tickets, fetchTickets } = useTickets();  // 👈 fetchTickets added here
   const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
@@ -19,9 +20,16 @@ export default function AdminReports() {
 
   const [users, setUsers] = useState([]);
 
-  // ===========================
+  // ============================================================
+  // FORCE REFRESH of tickets EVERY TIME page is loaded
+  // ============================================================
+  useEffect(() => {
+    fetchTickets();  // 👈 FIX — always reload tickets!
+  }, []);
+
+  // ============================================================
   // Load ALL users (backend does NOT populate agent field)
-  // ===========================
+  // ============================================================
   useEffect(() => {
     const loadUsers = async () => {
       const res = await fetch(`${API_BASE}/api/users`, {
@@ -37,9 +45,7 @@ export default function AdminReports() {
     loadUsers();
   }, []);
 
-  // ===========================
-  // Build map: agentId → full user object
-  // ===========================
+  // Build map: agentId → user object
   const agentMap = useMemo(() => {
     const map = {};
     users.forEach((u) => {
@@ -48,27 +54,22 @@ export default function AdminReports() {
     return map;
   }, [users]);
 
-  // Filter users for agent dropdown
-  const agents = useMemo(
-    () => users.filter((u) => u.role === "Agent"),
-    [users]
-  );
+  // Agents dropdown list
+  const agents = useMemo(() => {
+    return users.filter((u) => u.role === "Agent");
+  }, [users]);
 
-  // ===========================
-  // Apply filters to tickets
-  // ===========================
+  // Apply filters
   const filteredTickets = useMemo(() => {
     return tickets.filter((t) => {
       if (statusFilter && t.status !== statusFilter) return false;
       if (priorityFilter && t.priority !== priorityFilter) return false;
-      if (agentFilter && t.agent !== agentFilter) return false; // agent field is ID
+      if (agentFilter && t.agent !== agentFilter) return false; // agent stored as ID
       return true;
     });
   }, [tickets, statusFilter, priorityFilter, agentFilter]);
 
-  // ===========================
-  // Summary counts
-  // ===========================
+  // Summary section
   const statusSummary = useMemo(() => {
     const summary = {};
     filteredTickets.forEach((t) => {
@@ -77,9 +78,6 @@ export default function AdminReports() {
     return summary;
   }, [filteredTickets]);
 
-  // ===========================
-  // Navigate to ticket
-  // ===========================
   const openTicket = (id) => navigate(`/ticket/${id}`);
 
   return (
@@ -89,9 +87,8 @@ export default function AdminReports() {
       <div className="admin-reports-container">
         <h1 className="admin-reports-title">Admin Ticket Reports</h1>
 
-        {/* Filters */}
+        {/* FILTERS */}
         <div className="filter-section">
-
           <div>
             <label>Status:</label>
             <select
@@ -148,7 +145,7 @@ export default function AdminReports() {
           </button>
         </div>
 
-        {/* Summary Box */}
+        {/* SUMMARY */}
         <div className="summary-box">
           <h2>Summary</h2>
           {Object.keys(statusSummary).length === 0 ? (
@@ -164,7 +161,7 @@ export default function AdminReports() {
           )}
         </div>
 
-        {/* Tickets Table */}
+        {/* TICKETS TABLE */}
         <table className="report-table">
           <thead>
             <tr>
@@ -178,28 +175,18 @@ export default function AdminReports() {
 
           <tbody>
             {filteredTickets.map((t) => {
-              const agent = agentMap[t.agent]; // lookup by agent ID
-
+              const agent = agentMap[t.agent]; // agent is an ID
               return (
                 <tr
                   key={t._id}
                   className="clickable-report-row"
                   onClick={() => openTicket(t._id)}
                 >
-                  {/* Customer Name */}
                   <td>{t.customer?.name || "Unknown"}</td>
-
-                  {/* Ticket Info */}
                   <td>{t.title}</td>
                   <td>{t.status}</td>
                   <td>{t.priority}</td>
-
-                  {/* Agent Name + Email */}
-                  <td>
-                    {agent
-                      ? `${agent.name} (${agent.email})`
-                      : "Unassigned"}
-                  </td>
+                  <td>{agent ? `${agent.name} (${agent.email})` : "Unassigned"}</td>
                 </tr>
               );
             })}

@@ -178,9 +178,17 @@ function TicketDetails() {
 
           <TicketComments ticketId={ticket._id} />
 
-          <Link to={getHomeRoute()} className="back-button">
-            ← Back to Tickets
-          </Link>
+      <Link
+        to={getHomeRoute()}
+        className="back-button"
+        onClick={() => {
+          // force refresh on return
+          setTimeout(() => window.location.reload(), 10);
+        }}
+      >
+        ← Back to Tickets
+      </Link>
+
         </div>
       </div>
     </>
