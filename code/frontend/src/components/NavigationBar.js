@@ -1,9 +1,9 @@
 // src/components/NavigationBar.js
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
 import logo from "./assets/logo.png";
 import { useTickets } from "../TicketsContext";
-import React from "react";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -14,9 +14,7 @@ function NavigationBar() {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser, setTickets } = useTickets();
 
-  // -----------------------------------------------------
   // Determine user home route based on role
-  // -----------------------------------------------------
   const homeRoute =
     currentUser?.role === "Admin"
       ? "/admin-home"
@@ -26,9 +24,6 @@ function NavigationBar() {
       ? "/home"
       : "/";
 
-  // -----------------------------------------------------
-  // Logout handler
-  // -----------------------------------------------------
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -52,8 +47,8 @@ function NavigationBar() {
 
   return (
     <div className="Wrapper">
+      {/* Left: Logo + Brand */}
       <header className="left">
-        {/* Logo + App Name */}
         <h1>
           <Link to={homeRoute} className="logoName">
             QuickTix
@@ -65,53 +60,65 @@ function NavigationBar() {
         </Link>
       </header>
 
+      {/* Right: Navigation Links */}
       <nav className="right">
         <ul>
-          {/* -------------------------------------------------
-             ADMIN LINKS
-          ------------------------------------------------- */}
+          {/* Admin links */}
           {currentUser?.role === "Admin" && (
             <>
-              <li><Link to="/admin-home">Admin Dashboard</Link></li>
-              <li><Link to="/admin-reports">Reports</Link></li>
+              <li>
+                <Link className="navItem" to="/admin-home">
+                  Admin Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link className="navItem" to="/admin-reports">
+                  Reports
+                </Link>
+              </li>
+              <li>
+                <Link className="navItem" to="/create-new-ticket">
+                  Create New Ticket
+                </Link>
+              </li>  
             </>
           )}
 
-          {/* -------------------------------------------------
-             AGENT LINKS
-          ------------------------------------------------- */}
+          {/* Agent links */}
           {currentUser?.role === "Agent" && (
-            <li><Link to="/agent-home">Agent Home</Link></li>
+            <li>
+              <Link className="navItem" to="/agent-home">
+                Agent Home
+              </Link>
+            </li>
           )}
 
-          {/* -------------------------------------------------
-             CUSTOMER LINKS
-          ------------------------------------------------- */}
+          {/* Customer links */}
           {currentUser?.role === "Customer" && (
-            <>
-              <li><Link to="/create-new-ticket">Create New Ticket</Link></li>
-            </>
+            <li>
+              <Link className="navItem" to="/create-new-ticket">
+                Create New Ticket
+              </Link>
+            </li>
           )}
 
-          {/* -------------------------------------------------
-             SHARED LINKS
-          ------------------------------------------------- */}
-          <li><Link to="/update-profile">Update Profile</Link></li>
+          {/* Shared link */}
+          <li>
+            <Link className="navItem" to="/update-profile">
+              Update Profile
+            </Link>
+          </li>
 
+          {/* User greeting */}
           {displayName && (
             <li className="userName">
               Hello, <strong>{displayName}</strong>
             </li>
           )}
 
-          {/* -------------------------------------------------
-             LOGOUT BUTTON
-          ------------------------------------------------- */}
+          {/* Logout button, styled like a link */}
           <li>
-            <button
-              onClick={handleLogout}
-              className="logoutButton"
-            >
+            <button onClick={handleLogout} className="navItem logoutButton">
               Logout
             </button>
           </li>

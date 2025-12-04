@@ -1,5 +1,5 @@
 import React from 'react';
-import AgentNavigationBar from './AgentNavigationBar';
+import NavigationBar from '../NavigationBar';
 import TicketsTable from '../TicketsTable';
 import MyTicketsSummary from '../MyTicketsSummary';
 import { useTickets } from '../../TicketsContext';
@@ -14,7 +14,7 @@ function AgentHome() {
 
   return (
     <>
-      <AgentNavigationBar />
+      <NavigationBar />
       <MyTicketsSummary />
       <TicketsTable tickets={myTickets} />
     </>
