@@ -1,4 +1,4 @@
-// src/components/TicketDetails.js
+// UPDATED TicketDetails.js
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
@@ -13,7 +13,9 @@ const API_BASE =
 
 function TicketDetails() {
   const { id } = useParams();
-  const { currentUser, updateTicket } = useTickets();
+
+  // ⬇️ ADD fetchTickets HERE
+  const { currentUser, updateTicket, fetchTickets } = useTickets();
 
   const [ticket, setTicket] = useState(null);
   const [agents, setAgents] = useState([]);
@@ -178,17 +180,16 @@ function TicketDetails() {
 
           <TicketComments ticketId={ticket._id} />
 
-      <Link
-        to={getHomeRoute()}
-        className="back-button"
-        onClick={() => {
-          // force refresh on return
-          setTimeout(() => window.location.reload(), 10);
-        }}
-      >
-        ← Back to Tickets
-      </Link>
-
+          {/* FIXED Back Button */}
+          <Link
+            to={getHomeRoute()}
+            className="back-button"
+            onClick={async () => {
+              await fetchTickets();     // ⬅️ REFRESH TICKETS BEFORE NAVIGATION
+            }}
+          >
+            ← Back to Tickets
+          </Link>
         </div>
       </div>
     </>

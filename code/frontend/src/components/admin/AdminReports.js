@@ -11,7 +11,7 @@ const API_BASE =
     : "http://localhost:5000";
 
 export default function AdminReports() {
-  const { tickets, fetchTickets } = useTickets();  // 👈 fetchTickets added here
+  const { tickets, fetchTickets } = useTickets();
   const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
@@ -20,16 +20,12 @@ export default function AdminReports() {
 
   const [users, setUsers] = useState([]);
 
-  // ============================================================
-  // FORCE REFRESH of tickets EVERY TIME page is loaded
-  // ============================================================
+  // Load tickets on mount
   useEffect(() => {
-    fetchTickets();  // 👈 FIX — always reload tickets!
+    fetchTickets();
   }, []);
 
-  // ============================================================
-  // Load ALL users (backend does NOT populate agent field)
-  // ============================================================
+  // Load all users (admin-only endpoint)
   useEffect(() => {
     const loadUsers = async () => {
       const res = await fetch(`${API_BASE}/api/users`, {
@@ -45,16 +41,14 @@ export default function AdminReports() {
     loadUsers();
   }, []);
 
-  // Build map: agentId → user object
+  // Map userId → user object
   const agentMap = useMemo(() => {
     const map = {};
-    users.forEach((u) => {
-      map[u._id] = u;
-    });
+    users.forEach((u) => (map[u._id] = u));
     return map;
   }, [users]);
 
-  // Agents dropdown list
+  // List of agents for dropdown
   const agents = useMemo(() => {
     return users.filter((u) => u.role === "Agent");
   }, [users]);
@@ -64,12 +58,12 @@ export default function AdminReports() {
     return tickets.filter((t) => {
       if (statusFilter && t.status !== statusFilter) return false;
       if (priorityFilter && t.priority !== priorityFilter) return false;
-      if (agentFilter && t.agent !== agentFilter) return false; // agent stored as ID
+      if (agentFilter && t.agent !== agentFilter) return false; // agent is stored as ID
       return true;
     });
   }, [tickets, statusFilter, priorityFilter, agentFilter]);
 
-  // Summary section
+  // Summary count by status
   const statusSummary = useMemo(() => {
     const summary = {};
     filteredTickets.forEach((t) => {
@@ -89,7 +83,9 @@ export default function AdminReports() {
 
         {/* FILTERS */}
         <div className="filter-section">
-          <div>
+
+          {/* Status Filter */}
+          <div className="filter-group">
             <label>Status:</label>
             <select
               value={statusFilter}
@@ -103,7 +99,8 @@ export default function AdminReports() {
             </select>
           </div>
 
-          <div>
+          {/* Priority Filter */}
+          <div className="filter-group">
             <label>Priority:</label>
             <select
               value={priorityFilter}
@@ -117,7 +114,8 @@ export default function AdminReports() {
             </select>
           </div>
 
-          <div>
+          {/* Agent Filter */}
+          <div className="filter-group">
             <label>Agent:</label>
             <select
               value={agentFilter}
@@ -133,6 +131,7 @@ export default function AdminReports() {
             </select>
           </div>
 
+          {/* Reset Button (properly aligned) */}
           <button
             className="reset-btn"
             onClick={() => {
@@ -175,7 +174,7 @@ export default function AdminReports() {
 
           <tbody>
             {filteredTickets.map((t) => {
-              const agent = agentMap[t.agent]; // agent is an ID
+              const agent = agentMap[t.agent]; // resolve agent ID to user object
               return (
                 <tr
                   key={t._id}
@@ -186,7 +185,11 @@ export default function AdminReports() {
                   <td>{t.title}</td>
                   <td>{t.status}</td>
                   <td>{t.priority}</td>
-                  <td>{agent ? `${agent.name} (${agent.email})` : "Unassigned"}</td>
+                  <td>
+                    {agent
+                      ? `${agent.name} (${agent.email})`
+                      : "Unassigned"}
+                  </td>
                 </tr>
               );
             })}

@@ -19,49 +19,57 @@
 /* =========================================
    FILTER SECTION
 ========================================= */
-/* ===== Filters Row ===== */
+
+/* Filters Row */
 .filter-section {
   display: flex;
-  align-items: flex-end;     /* aligns dropdowns + button on the same baseline */
+  align-items: flex-end; /* Aligns everything on the same baseline */
   gap: 24px;
   margin-bottom: 25px;
   flex-wrap: wrap;
 }
 
-/* Label + select stacked vertically */
-.filter-section > div {
+/* Each filter group (label + dropdown) */
+.filter-group {
   display: flex;
   flex-direction: column;
 }
 
-/* Dropdown styling */
+/* Standard dropdown styling */
 .filter-select {
   width: 180px;
   padding: 8px;
-  height: 42px;             /* makes height consistent */
+  height: 42px;
   border-radius: 6px;
   border: 1px solid #ccc;
   background-color: #fff;
 }
 
-/* Reset button aligned with dropdowns */
+/* Reset button — now matches exact dropdown height and alignment */
 .reset-btn {
-  height: 42px;             /* EXACT match to dropdowns */
-  padding: 0 18px;
+  padding: 0 20px;
+  height: 42px;               /* EXACT match with dropdowns */
   background-color: #444;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  display: flex;            /* centers text vertically */
+
+  /* Perfect centering */
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 22px;         /* exact offset to align with labeled inputs */
 }
 
-/* Hover */
 .reset-btn:hover {
   background-color: #222;
+}
+
+/* Force alignment if button wraps to next row */
+@media (min-width: 769px) {
+  .reset-btn {
+    align-self: flex-end;  /* Aligns with the dropdown baselines on desktop */
+  }
 }
 
 /* =========================================
@@ -132,16 +140,15 @@
     gap: 15px;
   }
 
+  .filter-group {
+    width: 100%;
+  }
+
   .filter-select {
-    width: 200px;
+    width: 100%;
   }
 
   .reset-btn {
-    width: 200px;
-  }
-
-  .report-table th,
-  .report-table td {
-    padding: 10px 6px;
+    width: 100%;
   }
 }
