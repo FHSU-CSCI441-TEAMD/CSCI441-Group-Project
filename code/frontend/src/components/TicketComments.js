@@ -1,8 +1,7 @@
-// src/components/TicketComments.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useTickets } from "../TicketsContext";
+// src/components/TicketComments.js
+import React, { useEffect, useState } from "react";
 import "./TicketComments.css";
+import { useTickets } from "../TicketsContext";
 
 const API_BASE =
   process.env.NODE_ENV === "production"
@@ -11,42 +10,33 @@ const API_BASE =
 
 export default function TicketComments({ ticketId }) {
   const { currentUser } = useTickets();
-  const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [error, setError] = useState("");
 
-  // --------------------------------------------------------
-  // Load comments from ticket
-  // --------------------------------------------------------
+  // Fetch comments when component loads
   useEffect(() => {
     const loadComments = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/tickets/${ticketId}`, {
+        const res = await fetch(`${API_BASE}/api/tickets/${ticketId}`, {
           credentials: "include",
         });
 
-        const data = await response.json();
+        if (!res.ok) return;
 
-        if (response.ok) {
-          setComments(data.comments || []);
-        } else {
-          setError(data.message || "Failed to load comments");
-        }
-      } catch {
-        setError("Network error loading comments");
+        const ticket = await res.json();
+        setComments(ticket.comments || []);
+      } catch (err) {
+        console.error("Failed to load comments:", err);
       }
     };
 
     loadComments();
   }, [ticketId]);
 
-  // --------------------------------------------------------
-  // Submit a new comment
-  // --------------------------------------------------------
+  // Submit new comment
   const submitComment = async () => {
-    if (!newComment.trim()) return; // prevent empty comments
+    if (!newComment.trim()) return;
 
     try {
       const res = await fetch(`${API_BASE}/api/tickets/${ticketId}/comments`, {
@@ -54,68 +44,62 @@ export default function TicketComments({ ticketId }) {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: newComment, // backend expects `text`
+          text: newComment,
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) {
+        alert("Failed to submit comment");
+        return;
+      }
+
+      const saved = await res.json();
 
       // Add new comment to UI
-      setComments((prev) => [...prev, data]);
+      setComments((prev) => [...prev, saved]);
+
       setNewComment("");
-
-      // ----------------------------------------------------
-      // Redirect user based on role after submit
-      // ----------------------------------------------------
-      if (currentUser.role === "Admin") navigate("/admin-home");
-      else if (currentUser.role === "Agent") navigate("/agent-home");
-      else navigate("/home");
-
     } catch (err) {
-      setError(err.message || "Failed to submit comment");
+      console.error("Error posting comment:", err);
     }
   };
 
-  // --------------------------------------------------------
-  // UI Rendering
-  // --------------------------------------------------------
+  const formatDate = (dateStr) => {
+    const d = new Date(dateStr);
+    return d.toLocaleString();
+  };
+
   return (
-    <div className="ticket-comments">
+    <div className="comments-wrapper">
       <h3>Comments</h3>
 
-      {error && <p className="error">{error}</p>}
+      {/* Comment List */}
+      <div className="comments-list">
+        {comments.length === 0 && <p>No comments yet.</p>}
 
-      {/* Comments List */}
-      <ul className="comments-list">
-        {comments.map((c, index) => (
-          <li key={index}>
-            <strong>{c.author?.name || c.author?.email || "Unknown User"}</strong>
-
-            <span
-              style={{
-                marginLeft: "10px",
-                fontSize: "0.8rem",
-                opacity: 0.7,
-              }}
-            >
-              {new Date(c.createdAt).toLocaleString()}
-            </span>
-
-            <p>{c.text}</p>
-          </li>
+        {comments.map((c) => (
+          <div key={c._id} className="comment-card">
+            <div className="comment-header">
+              <strong>{c.author?.name || c.author?.email || "Unknown User"}</strong>
+              <span className="comment-date">{formatDate(c.createdAt)}</span>
+            </div>
+            <p className="comment-text">{c.text}</p>
+          </div>
         ))}
-      </ul>
+      </div>
 
       {/* Add Comment Box */}
-      <div className="comment-input">
+      <div className="comment-input-wrapper">
         <textarea
           value={newComment}
-          placeholder="Add a comment..."
           onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Type a comment..."
+          className="comment-textarea"
         />
 
-        <button onClick={submitComment}>Post Comment</button>
+        <button onClick={submitComment} className="comment-submit-btn">
+          Add Comment
+        </button>
       </div>
     </div>
   );
