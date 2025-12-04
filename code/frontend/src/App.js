@@ -19,7 +19,7 @@ import AgentHome from "./components/agent/AgentHome";
 function App() {
   return (
     <div className="App">
-      <TicketsProvider> {/* 👈 wrap all routes */}
+      <TicketsProvider> {/* wrap all routes */}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
@@ -30,9 +30,9 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/ticket/:id" element={<TicketDetails />} />
-          <Route path="/admin-home" element={<AdminHome />} />
+          {/*<Route path="/admin-home" element={<AdminHome />} /> */}
           <Route path="/admin-reports" element={<AdminReports />} />
-          <Route path="/admin-reassign/:id" element={<AdminReassignTicket />} />
+          {/*<Route path="/admin-reassign/:id" element={<AdminReassignTicket />} /> */}
         </Routes>
       </TicketsProvider>
     </div>

@@ -67,11 +67,6 @@ function NavigationBar() {
           {currentUser?.role === "Admin" && (
             <>
               <li>
-                <Link className="navItem" to="/admin-home">
-                  Admin Dashboard
-                </Link>
-              </li>
-              <li>
                 <Link className="navItem" to="/admin-reports">
                   Reports
                 </Link>

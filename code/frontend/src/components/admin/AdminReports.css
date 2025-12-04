@@ -1,121 +1,110 @@
-/* Main container */
+/* Container */
 .admin-reports-container {
-  max-width: 1100px;
-  margin: 100px auto 40px;
   padding: 20px;
+  margin-top: 80px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Page title */
+.admin-reports-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.admin-reports-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 25px;
-}
-
-/* Filter layout */
+/* Filter section: row of dropdowns centered */
 .filter-section {
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: 20px;
   flex-wrap: wrap;
   margin-bottom: 10px;
 }
 
-.filter-item {
+/* Each filter group */
+.filter-section > div {
   display: flex;
   flex-direction: column;
-  text-align: left;
-  min-width: 180px;
+  align-items: flex-start;
 }
 
-.filter-item label {
-  font-size: 0.9rem;
-  margin-bottom: 6px;
+.filter-section label {
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .filter-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 6px;
+  font-size: 14px;
+  min-width: 160px;
 }
 
-/* Reset button centered below filters */
+/* Reset button container BELOW filters, centered */
 .reset-container {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 15px 0 25px;
+  margin: 10px 0 20px;
 }
 
+/* Reset button */
 .reset-btn {
-  padding: 8px 16px;
-  background-color: #999;
-  border: none;
-  border-radius: 6px;
+  padding: 7px 16px;
+  background-color: #444;
   color: white;
-  font-weight: 600;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .reset-btn:hover {
-  background-color: #777;
+  background-color: #333;
+}
+
+/* Make clickable table rows show a pointer cursor */
+.clickable-report-row {
+  cursor: pointer;
+}
+
+.clickable-report-row:hover {
+  background-color: #f0f0f0; /* optional hover highlight */
 }
 
 /* Summary section */
 .summary-box {
-  margin: 25px auto;
-  background: #f8f8f8;
-  padding: 15px 20px;
-  border-radius: 8px;
-  max-width: 450px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.summary-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.summary-box li {
-  margin: 6px 0;
+.summary-box h2 {
+  font-size: 20px;
+  margin-bottom: 5px;
 }
 
 /* Tickets Table */
 .report-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
 }
 
 .report-table th,
 .report-table td {
-  border: 1px solid #ddd;
   padding: 10px;
+  border: 1px solid #ccc;
 }
 
 .report-table th {
-  background-color: #f0f0f0;
+  background-color: #eee;
   font-weight: bold;
 }
 
-.report-table tr:hover {
+.report-table tr:nth-child(even) {
   background-color: #fafafa;
 }
 
-/* Responsive layout */
-@media (max-width: 768px) {
-  .filter-section {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .filter-item {
-    width: 100%;
-    max-width: 260px;
-    text-align: left;
-  }
-
-  .summary-box {
-    max-width: 95%;
-  }
+.report-table tr:hover {
+  background-color: #f0f0f0;
 }

@@ -1,6 +1,7 @@
 // src/components/AdminReports/AdminReports.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
+import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar";
 import "./AdminReports.css";
 
@@ -10,51 +11,58 @@ const API_BASE =
     : "http://localhost:5000";
 
 export default function AdminReports() {
-  const { tickets, fetchTickets } = useTickets();
+  const { tickets } = useTickets();
+  const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
   const [agentFilter, setAgentFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
   const [agents, setAgents] = useState([]);
 
-  // Fetch agents + refresh tickets on load
+  // Fetch ALL users, filter out Agents
   useEffect(() => {
-    fetchTickets();
-    loadAgents();
+    const fetchAgents = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/users`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          console.error("Failed to fetch users for agent list");
+          return;
+        }
+
+        const allUsers = await res.json();
+        const onlyAgents = allUsers.filter((u) => u.role === "Agent");
+        setAgents(onlyAgents);
+      } catch (err) {
+        console.error("Error fetching agents:", err);
+      }
+    };
+
+    fetchAgents();
   }, []);
-
-  const loadAgents = async () => {
-    const res = await fetch(`${API_BASE}/api/users`, {
-      credentials: "include",
-    });
-
-    if (res.ok) {
-      const all = await res.json();
-      setAgents(all.filter((u) => u.role === "Agent"));
-    }
-  };
-
-  // Create a fast lookup map for agent IDs → full agent object
-  const agentMap = useMemo(() => {
-    const map = {};
-    agents.forEach((a) => (map[a._id] = a));
-    return map;
-  }, [agents]);
 
   // Apply filters
   const filteredTickets = useMemo(() => {
     return tickets.filter((t) => {
-      const agentId = t.agent?._id || t.agent || t.assignedAgentId;
-
       if (statusFilter && t.status !== statusFilter) return false;
       if (priorityFilter && t.priority !== priorityFilter) return false;
-      if (agentFilter && agentId !== agentFilter) return false;
+
+      // Agent ID can be stored as object or raw ID
+      if (
+        agentFilter &&
+        t.agent?._id !== agentFilter &&
+        t.agent !== agentFilter
+      ) {
+        return false;
+      }
 
       return true;
     });
   }, [tickets, statusFilter, priorityFilter, agentFilter]);
 
-  // Summary count
+  // Summary counts
   const statusSummary = useMemo(() => {
     const summary = {};
     filteredTickets.forEach((t) => {
@@ -63,6 +71,11 @@ export default function AdminReports() {
     return summary;
   }, [filteredTickets]);
 
+  // Navigate to ticket details
+  const openTicket = (id) => {
+    navigate(`/ticket/${id}`);
+  };
+
   return (
     <div>
       <NavigationBar />
@@ -70,9 +83,10 @@ export default function AdminReports() {
       <div className="admin-reports-container">
         <h1 className="admin-reports-title">Admin Ticket Reports</h1>
 
-        {/* Filters Row */}
+        {/* Filters */}
         <div className="filter-section">
-          <div className="filter-item">
+          {/* Status Filter */}
+          <div>
             <label>Status:</label>
             <select
               value={statusFilter}
@@ -86,7 +100,8 @@ export default function AdminReports() {
             </select>
           </div>
 
-          <div className="filter-item">
+          {/* Priority Filter */}
+          <div>
             <label>Priority:</label>
             <select
               value={priorityFilter}
@@ -100,7 +115,8 @@ export default function AdminReports() {
             </select>
           </div>
 
-          <div className="filter-item">
+          {/* Agent Filter */}
+          <div>
             <label>Agent:</label>
             <select
               value={agentFilter}
@@ -110,7 +126,7 @@ export default function AdminReports() {
               <option value="">All</option>
               {agents.map((a) => (
                 <option key={a._id} value={a._id}>
-                  {a.name} ({a.email})
+                  {a.name || a.email} ({a.email})
                 </option>
               ))}
             </select>
@@ -131,7 +147,7 @@ export default function AdminReports() {
           </button>
         </div>
 
-        {/* Summary */}
+        {/* Summary Box */}
         <div className="summary-box">
           <h2>Summary</h2>
           {Object.keys(statusSummary).length === 0 ? (
@@ -147,11 +163,11 @@ export default function AdminReports() {
           )}
         </div>
 
-        {/* Tickets table */}
+        {/* Tickets Table */}
         <table className="report-table">
           <thead>
             <tr>
-              <th>Customer</th>
+              <th>ID</th>
               <th>Title</th>
               <th>Status</th>
               <th>Priority</th>
@@ -160,24 +176,19 @@ export default function AdminReports() {
           </thead>
 
           <tbody>
-            {filteredTickets.map((t) => {
-              const agentId = t.agent?._id || t.agent || t.assignedAgentId;
-              const agent = agentMap[agentId];
-
-              return (
-                <tr key={t._id}>
-                  <td>{t.createdBy?.name || "Unknown"}</td>
-                  <td>{t.title}</td>
-                  <td>{t.status}</td>
-                  <td>{t.priority}</td>
-                  <td>
-                    {agent
-                      ? `${agent.name} (${agent.email})`
-                      : "Unassigned"}
-                  </td>
-                </tr>
-              );
-            })}
+            {filteredTickets.map((t) => (
+              <tr
+                key={t._id}
+                className="clickable-report-row"
+                onClick={() => openTicket(t._id)}
+              >
+                <td>{t._id}</td>
+                <td>{t.title}</td>
+                <td>{t.status}</td>
+                <td>{t.priority}</td>
+                <td>{t.agent?.name || t.agent?.email || "Unassigned"}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
