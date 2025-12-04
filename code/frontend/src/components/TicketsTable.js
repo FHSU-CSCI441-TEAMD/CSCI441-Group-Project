@@ -14,26 +14,32 @@ function TicketsTable({ tickets: propTickets }) {
   const tickets = propTickets || contextTickets || [];
   const navigate = useNavigate();
 
+  // 🔹 Load all users so we can resolve agent IDs → names
   const [users, setUsers] = useState([]);
 
-  // Load all users (needed to resolve agent IDs)
   useEffect(() => {
     const loadUsers = async () => {
-      const res = await fetch(`${API_BASE}/api/users`, {
-        credentials: "include",
-      });
-      if (res.ok) {
+      try {
+        const res = await fetch(`${API_BASE}/api/users`, {
+          credentials: "include",
+        });
+        if (!res.ok) return;
         const data = await res.json();
         setUsers(data);
+      } catch (err) {
+        console.error("Failed to load users:", err);
       }
     };
+
     loadUsers();
   }, []);
 
-  // Build lookup: userId → user object
+  // 🔹 Build a quick lookup map: userId -> user object
   const userMap = useMemo(() => {
     const map = {};
-    users.forEach((u) => (map[u._id] = u));
+    users.forEach((u) => {
+      map[u._id] = u;
+    });
     return map;
   }, [users]);
 
@@ -49,7 +55,17 @@ function TicketsTable({ tickets: propTickets }) {
     });
   };
 
-  const handleRowClick = (ticketId) => navigate(`/ticket/${ticketId}`);
+  if (!tickets.length) {
+    return (
+      <div className="tickets-empty">
+        <p>No tickets found.</p>
+      </div>
+    );
+  }
+
+  const handleRowClick = (ticketId) => {
+    navigate(`/ticket/${ticketId}`);
+  };
 
   return (
     <div className="tickets-table-container">
@@ -77,33 +93,33 @@ function TicketsTable({ tickets: propTickets }) {
                 ? formatDate(t.updatedAt)
                 : "—";
 
+            // 🔹 agent is an ID string in your data, sometimes null
             const agentId =
-              t.agent?._id ||
-              t.agent ||
-              t.assignedAgentId ||
-              t.assignedAgent ||
-              null;
+              typeof t.agent === "object" && t.agent !== null
+                ? t.agent._id
+                : t.agent || null;
 
             const agent = agentId ? userMap[agentId] : null;
 
             return (
               <tr
-                key={t._id}
-                onClick={() => handleRowClick(t._id)}
+                key={t._id || t.id}
+                onClick={() => handleRowClick(t._id || t.id)}
                 className="clickable-row"
               >
                 <td>{t.title || "Untitled"}</td>
-                <td className={`status ${t.status?.toLowerCase()}`}>
-                  {t.status}
-                </td>
-                <td className={`priority ${t.priority?.toLowerCase()}`}>
-                  {t.priority}
+
+                <td className={`status ${t.status?.toLowerCase() || ""}`}>
+                  {t.status || "Open"}
                 </td>
 
-                {/* Display resolved agent */}
+                <td className={`priority ${t.priority?.toLowerCase() || ""}`}>
+                  {t.priority || "N/A"}
+                </td>
+
                 <td>
                   {agent
-                    ? `${agent.name} (${agent.email})`
+                    ? `${agent.name || agent.email} (${agent.email})`
                     : "Unassigned"}
                 </td>
 
