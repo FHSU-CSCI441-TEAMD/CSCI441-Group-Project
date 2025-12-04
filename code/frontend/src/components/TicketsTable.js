@@ -1,4 +1,4 @@
-// UPDATED TicketsTable.js
+// src/components/TicketsTable.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../TicketsContext";
 import { useNavigate } from "react-router-dom";
@@ -16,9 +16,9 @@ function TicketsTable({ tickets: propTickets }) {
 
   const [users, setUsers] = useState([]);
 
-  // Load all users
+  // Load all users (needed to resolve agent IDs)
   useEffect(() => {
-    const load = async () => {
+    const loadUsers = async () => {
       const res = await fetch(`${API_BASE}/api/users`, {
         credentials: "include",
       });
@@ -27,10 +27,10 @@ function TicketsTable({ tickets: propTickets }) {
         setUsers(data);
       }
     };
-    load();
+    loadUsers();
   }, []);
 
-  // Build lookup
+  // Build lookup: userId → user object
   const userMap = useMemo(() => {
     const map = {};
     users.forEach((u) => (map[u._id] = u));
@@ -77,12 +77,12 @@ function TicketsTable({ tickets: propTickets }) {
                 ? formatDate(t.updatedAt)
                 : "—";
 
-            // 🔥 resolve correct agent field
             const agentId =
-              t.assignedAgentId ||
-              t.agentId ||
               t.agent?._id ||
-              t.agent; // fallback
+              t.agent ||
+              t.assignedAgentId ||
+              t.assignedAgent ||
+              null;
 
             const agent = agentId ? userMap[agentId] : null;
 
@@ -100,7 +100,7 @@ function TicketsTable({ tickets: propTickets }) {
                   {t.priority}
                 </td>
 
-                {/* Display agent properly */}
+                {/* Display resolved agent */}
                 <td>
                   {agent
                     ? `${agent.name} (${agent.email})`
