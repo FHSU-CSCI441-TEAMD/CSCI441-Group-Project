@@ -1,7 +1,6 @@
-// UPDATED AdminReports.js
+// src/components/AdminReports/AdminReports.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
-import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar";
 import "./AdminReports.css";
 
@@ -12,58 +11,50 @@ const API_BASE =
 
 export default function AdminReports() {
   const { tickets, fetchTickets } = useTickets();
-  const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
   const [agentFilter, setAgentFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
+  const [agents, setAgents] = useState([]);
 
-  const [users, setUsers] = useState([]);
-
-  // Load tickets on mount
+  // Fetch agents + refresh tickets on load
   useEffect(() => {
     fetchTickets();
+    loadAgents();
   }, []);
 
-  // Load all users (admin-only endpoint)
-  useEffect(() => {
-    const loadUsers = async () => {
-      const res = await fetch(`${API_BASE}/api/users`, {
-        credentials: "include",
-      });
+  const loadAgents = async () => {
+    const res = await fetch(`${API_BASE}/api/users`, {
+      credentials: "include",
+    });
 
-      if (res.ok) {
-        const data = await res.json();
-        setUsers(data);
-      }
-    };
+    if (res.ok) {
+      const all = await res.json();
+      setAgents(all.filter((u) => u.role === "Agent"));
+    }
+  };
 
-    loadUsers();
-  }, []);
-
-  // Map userId → user object
+  // Create a fast lookup map for agent IDs → full agent object
   const agentMap = useMemo(() => {
     const map = {};
-    users.forEach((u) => (map[u._id] = u));
+    agents.forEach((a) => (map[a._id] = a));
     return map;
-  }, [users]);
-
-  // List of agents for dropdown
-  const agents = useMemo(() => {
-    return users.filter((u) => u.role === "Agent");
-  }, [users]);
+  }, [agents]);
 
   // Apply filters
   const filteredTickets = useMemo(() => {
     return tickets.filter((t) => {
+      const agentId = t.agent?._id || t.agent || t.assignedAgentId;
+
       if (statusFilter && t.status !== statusFilter) return false;
       if (priorityFilter && t.priority !== priorityFilter) return false;
-      if (agentFilter && t.agent !== agentFilter) return false; // agent is stored as ID
+      if (agentFilter && agentId !== agentFilter) return false;
+
       return true;
     });
   }, [tickets, statusFilter, priorityFilter, agentFilter]);
 
-  // Summary count by status
+  // Summary count
   const statusSummary = useMemo(() => {
     const summary = {};
     filteredTickets.forEach((t) => {
@@ -72,8 +63,6 @@ export default function AdminReports() {
     return summary;
   }, [filteredTickets]);
 
-  const openTicket = (id) => navigate(`/ticket/${id}`);
-
   return (
     <div>
       <NavigationBar />
@@ -81,11 +70,9 @@ export default function AdminReports() {
       <div className="admin-reports-container">
         <h1 className="admin-reports-title">Admin Ticket Reports</h1>
 
-        {/* FILTERS */}
+        {/* Filters Row */}
         <div className="filter-section">
-
-          {/* Status Filter */}
-          <div className="filter-group">
+          <div className="filter-item">
             <label>Status:</label>
             <select
               value={statusFilter}
@@ -99,8 +86,7 @@ export default function AdminReports() {
             </select>
           </div>
 
-          {/* Priority Filter */}
-          <div className="filter-group">
+          <div className="filter-item">
             <label>Priority:</label>
             <select
               value={priorityFilter}
@@ -114,8 +100,7 @@ export default function AdminReports() {
             </select>
           </div>
 
-          {/* Agent Filter */}
-          <div className="filter-group">
+          <div className="filter-item">
             <label>Agent:</label>
             <select
               value={agentFilter}
@@ -130,8 +115,10 @@ export default function AdminReports() {
               ))}
             </select>
           </div>
+        </div>
 
-          {/* Reset Button (properly aligned) */}
+        {/* Reset button below filters, centered */}
+        <div className="reset-container">
           <button
             className="reset-btn"
             onClick={() => {
@@ -144,11 +131,11 @@ export default function AdminReports() {
           </button>
         </div>
 
-        {/* SUMMARY */}
+        {/* Summary */}
         <div className="summary-box">
           <h2>Summary</h2>
           {Object.keys(statusSummary).length === 0 ? (
-            <p>No tickets match the selected filters.</p>
+            <p>No tickets match your filters.</p>
           ) : (
             <ul>
               {Object.entries(statusSummary).map(([status, count]) => (
@@ -160,7 +147,7 @@ export default function AdminReports() {
           )}
         </div>
 
-        {/* TICKETS TABLE */}
+        {/* Tickets table */}
         <table className="report-table">
           <thead>
             <tr>
@@ -174,14 +161,12 @@ export default function AdminReports() {
 
           <tbody>
             {filteredTickets.map((t) => {
-              const agent = agentMap[t.agent]; // resolve agent ID to user object
+              const agentId = t.agent?._id || t.agent || t.assignedAgentId;
+              const agent = agentMap[agentId];
+
               return (
-                <tr
-                  key={t._id}
-                  className="clickable-report-row"
-                  onClick={() => openTicket(t._id)}
-                >
-                  <td>{t.customer?.name || "Unknown"}</td>
+                <tr key={t._id}>
+                  <td>{t.createdBy?.name || "Unknown"}</td>
                   <td>{t.title}</td>
                   <td>{t.status}</td>
                   <td>{t.priority}</td>

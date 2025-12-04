@@ -1,3 +1,4 @@
+// UPDATED TicketsTable.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../TicketsContext";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ function TicketsTable({ tickets: propTickets }) {
 
   const [users, setUsers] = useState([]);
 
-  // Load all users once (same as AdminReports)
+  // Load all users
   useEffect(() => {
     const load = async () => {
       const res = await fetch(`${API_BASE}/api/users`, {
@@ -29,7 +30,7 @@ function TicketsTable({ tickets: propTickets }) {
     load();
   }, []);
 
-  // Build easy lookup map
+  // Build lookup
   const userMap = useMemo(() => {
     const map = {};
     users.forEach((u) => (map[u._id] = u));
@@ -48,17 +49,7 @@ function TicketsTable({ tickets: propTickets }) {
     });
   };
 
-  if (!tickets.length) {
-    return (
-      <div className="tickets-empty">
-        <p>No tickets found.</p>
-      </div>
-    );
-  }
-
-  const handleRowClick = (ticketId) => {
-    navigate(`/ticket/${ticketId}`);
-  };
+  const handleRowClick = (ticketId) => navigate(`/ticket/${ticketId}`);
 
   return (
     <div className="tickets-table-container">
@@ -86,11 +77,14 @@ function TicketsTable({ tickets: propTickets }) {
                 ? formatDate(t.updatedAt)
                 : "—";
 
-            // Resolve agent name properly
-            const agent =
-              userMap[t.agent]?.name ||
-              (t.agent?._id && userMap[t.agent._id]?.name) ||
-              (t.agent?.name ?? null);
+            // 🔥 resolve correct agent field
+            const agentId =
+              t.assignedAgentId ||
+              t.agentId ||
+              t.agent?._id ||
+              t.agent; // fallback
+
+            const agent = agentId ? userMap[agentId] : null;
 
             return (
               <tr
@@ -106,7 +100,12 @@ function TicketsTable({ tickets: propTickets }) {
                   {t.priority}
                 </td>
 
-                <td>{agent || "Unassigned"}</td>
+                {/* Display agent properly */}
+                <td>
+                  {agent
+                    ? `${agent.name} (${agent.email})`
+                    : "Unassigned"}
+                </td>
 
                 <td>{created}</td>
                 <td>{updated}</td>

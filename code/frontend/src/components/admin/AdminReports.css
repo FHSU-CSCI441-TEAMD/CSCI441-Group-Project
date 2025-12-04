@@ -1,95 +1,75 @@
-/* =========================================
-   Admin Reports - Full Page Container
-========================================= */
+/* Main container */
 .admin-reports-container {
-  padding: 120px 40px 40px;
   max-width: 1100px;
-  margin: auto;
-  font-family: Arial, sans-serif;
+  margin: 100px auto 40px;
+  padding: 20px;
+  text-align: center;
 }
 
-/* Page title */
 .admin-reports-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 25px;
-  text-align: center;
 }
 
-/* =========================================
-   FILTER SECTION
-========================================= */
-
-/* Filters Row */
+/* Filter layout */
 .filter-section {
   display: flex;
-  align-items: flex-end; /* Aligns everything on the same baseline */
-  gap: 24px;
-  margin-bottom: 25px;
+  justify-content: center;
+  gap: 25px;
   flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-/* Each filter group (label + dropdown) */
-.filter-group {
+.filter-item {
   display: flex;
   flex-direction: column;
+  text-align: left;
+  min-width: 180px;
 }
 
-/* Standard dropdown styling */
+.filter-item label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
 .filter-select {
-  width: 180px;
   padding: 8px;
-  height: 42px;
-  border-radius: 6px;
   border: 1px solid #ccc;
-  background-color: #fff;
+  border-radius: 6px;
 }
 
-/* Reset button — now matches exact dropdown height and alignment */
+/* Reset button centered below filters */
+.reset-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 25px;
+}
+
 .reset-btn {
-  padding: 0 20px;
-  height: 42px;               /* EXACT match with dropdowns */
-  background-color: #444;
-  color: white;
+  padding: 8px 16px;
+  background-color: #999;
   border: none;
   border-radius: 6px;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
-
-  /* Perfect centering */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .reset-btn:hover {
-  background-color: #222;
+  background-color: #777;
 }
 
-/* Force alignment if button wraps to next row */
-@media (min-width: 769px) {
-  .reset-btn {
-    align-self: flex-end;  /* Aligns with the dropdown baselines on desktop */
-  }
-}
-
-/* =========================================
-   SUMMARY BOX
-========================================= */
+/* Summary section */
 .summary-box {
+  margin: 25px auto;
   background: #f8f8f8;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 30px;
-  text-align: center;
+  padding: 15px 20px;
+  border-radius: 8px;
+  max-width: 450px;
 }
 
-.summary-box h2 {
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-/* Remove bullets & center items */
 .summary-box ul {
   list-style: none;
   padding: 0;
@@ -97,58 +77,45 @@
 }
 
 .summary-box li {
-  font-size: 1rem;
   margin: 6px 0;
 }
 
-/* =========================================
-   TICKETS TABLE
-========================================= */
+/* Tickets Table */
 .report-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .report-table th,
 .report-table td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
 .report-table th {
-  background-color: #f2f2f2;
+  background-color: #f0f0f0;
   font-weight: bold;
 }
 
 .report-table tr:hover {
   background-color: #fafafa;
-  cursor: pointer;
 }
 
-/* =========================================
-   MOBILE RESPONSIVE
-========================================= */
+/* Responsive layout */
 @media (max-width: 768px) {
-  .admin-reports-container {
-    padding: 100px 20px 20px;
-  }
-
   .filter-section {
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
   }
 
-  .filter-group {
+  .filter-item {
     width: 100%;
+    max-width: 260px;
+    text-align: left;
   }
 
-  .filter-select {
-    width: 100%;
-  }
-
-  .reset-btn {
-    width: 100%;
+  .summary-box {
+    max-width: 95%;
   }
 }
