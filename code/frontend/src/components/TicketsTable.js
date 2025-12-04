@@ -14,7 +14,7 @@ function TicketsTable({ tickets: propTickets }) {
   const tickets = propTickets || contextTickets || [];
   const navigate = useNavigate();
 
-  // 🔹 Load all users so we can resolve agent IDs → names
+  // Load all users so we can resolve agent IDs → names
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -23,18 +23,21 @@ function TicketsTable({ tickets: propTickets }) {
         const res = await fetch(`${API_BASE}/api/users`, {
           credentials: "include",
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          console.error("Failed to fetch users for agent mapping");
+          return;
+        }
         const data = await res.json();
         setUsers(data);
       } catch (err) {
-        console.error("Failed to load users:", err);
+        console.error("Error loading users:", err);
       }
     };
 
     loadUsers();
   }, []);
 
-  // 🔹 Build a quick lookup map: userId -> user object
+  // Build lookup: userId -> user object
   const userMap = useMemo(() => {
     const map = {};
     users.forEach((u) => {
@@ -93,7 +96,7 @@ function TicketsTable({ tickets: propTickets }) {
                 ? formatDate(t.updatedAt)
                 : "—";
 
-            // 🔹 agent is an ID string in your data, sometimes null
+            // agent is an ID string (or null), not an object
             const agentId =
               typeof t.agent === "object" && t.agent !== null
                 ? t.agent._id
