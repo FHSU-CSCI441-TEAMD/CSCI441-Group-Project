@@ -57,17 +57,21 @@
   color: #000;
 }
 
-/* ===== Logout button styled like a link (fixes blue border) ===== */
 .logoutButton {
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 0;
-  margin: 0;
-  font: inherit;
   color: #333;
+  font-size: 1rem;
+  font-weight: 500;
   transition: color 0.2s ease;
+}
+
+/* Prevent inherited link-hover blue color */
+.logoutButton:hover {
+  color: #000 !important;
 }
 
 /* Remove focus borders completely */
