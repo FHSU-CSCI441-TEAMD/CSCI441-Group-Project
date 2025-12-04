@@ -90,7 +90,7 @@ export default function TicketComments({ ticketId }) {
       <ul className="comments-list">
         {comments.map((c, index) => (
           <li key={index}>
-            <strong>{c.authorName || "Unknown User"}</strong>
+            <strong>{c.author?.name || c.author?.email || "Unknown User"}</strong>
 
             <span
               style={{

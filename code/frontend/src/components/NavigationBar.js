@@ -17,7 +17,7 @@ function NavigationBar() {
   // Determine user home route based on role
   const homeRoute =
     currentUser?.role === "Admin"
-      ? "/admin-home"
+      ? "/admin-reports"
       : currentUser?.role === "Agent"
       ? "/agent-home"
       : currentUser
@@ -66,11 +66,11 @@ function NavigationBar() {
           {/* Admin links */}
           {currentUser?.role === "Admin" && (
             <>
-              <li>
+              {/*<li>
                 <Link className="navItem" to="/admin-home">
                   Admin Dashboard
                 </Link>
-              </li>
+              </li>*/}
               <li>
                 <Link className="navItem" to="/admin-reports">
                   Reports
