@@ -175,7 +175,14 @@ export default function AdminReports() {
 
           <tbody>
             {filteredTickets.map((t) => {
-              const agent = agentMap[t.agent]; // agent is an ID
+            const agentId =
+              t.agent?._id ||
+              t.agent ||
+              t.assignedAgentId ||
+              t.assignedAgent ||
+              null;
+
+            const agent = agentMap[agentId];
               return (
                 <tr
                   key={t._id}
