@@ -21,7 +21,7 @@ function TicketDetails() {
 
   // Determine home route by role
   const getHomeRoute = () => {
-    if (currentUser?.role === "Admin") return "/admin-home";
+    if (currentUser?.role === "Admin") return "/admin-reports";
     if (currentUser?.role === "Agent") return "/agent-home";
     return "/home";
   };

@@ -50,7 +50,7 @@ export default function Login() {
       const role = data.role;
 
       if (role === "Admin") {
-        navigate("/admin-home");
+        navigate("/admin-reports");
       } else if (role === "Agent") {
         navigate("/agent-home");
       } else {
