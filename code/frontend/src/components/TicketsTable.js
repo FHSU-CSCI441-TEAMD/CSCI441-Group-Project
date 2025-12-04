@@ -9,35 +9,30 @@ const API_BASE =
     ? "https://csci441-group-project.onrender.com"
     : "http://localhost:5000";
 
-function TicketsTable({ tickets: propTickets }) {
+export default function TicketsTable({ tickets: propTickets }) {
   const { tickets: contextTickets, currentUser } = useTickets();
   const tickets = propTickets || contextTickets || [];
   const navigate = useNavigate();
 
-  // Load all users so we can resolve agent IDs → names
   const [users, setUsers] = useState([]);
 
+  // Load ALL users to resolve agent ID → user
   useEffect(() => {
     const loadUsers = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/users`, {
-          credentials: "include",
-        });
-        if (!res.ok) {
-          console.error("Failed to fetch users for agent mapping");
-          return;
-        }
+      const res = await fetch(`${API_BASE}/api/users`, {
+        credentials: "include",
+      });
+
+      if (res.ok) {
         const data = await res.json();
         setUsers(data);
-      } catch (err) {
-        console.error("Error loading users:", err);
       }
     };
 
     loadUsers();
   }, []);
 
-  // Build lookup: userId -> user object
+  // Build map: userId → user object
   const userMap = useMemo(() => {
     const map = {};
     users.forEach((u) => {
@@ -47,34 +42,15 @@ function TicketsTable({ tickets: propTickets }) {
   }, [users]);
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "N/A";
     const d = new Date(dateStr);
-    return d.toLocaleString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return d.toLocaleString();
   };
 
-  if (!tickets.length) {
-    return (
-      <div className="tickets-empty">
-        <p>No tickets found.</p>
-      </div>
-    );
-  }
-
-  const handleRowClick = (ticketId) => {
-    navigate(`/ticket/${ticketId}`);
-  };
+  const openTicket = (id) => navigate(`/ticket/${id}`);
 
   return (
     <div className="tickets-table-container">
-      <h3>
-        {currentUser ? `${currentUser.name}'s Tickets` : "All Tickets"}
-      </h3>
+      <h3>{currentUser ? `${currentUser.name}'s Tickets` : "All Tickets"}</h3>
 
       <table className="tickets-table">
         <thead>
@@ -90,44 +66,32 @@ function TicketsTable({ tickets: propTickets }) {
 
         <tbody>
           {tickets.map((t) => {
-            const created = formatDate(t.createdAt);
-            const updated =
-              t.updatedAt && t.updatedAt !== t.createdAt
-                ? formatDate(t.updatedAt)
-                : "—";
-
-            // agent is an ID string (or null), not an object
-            const agentId =
-              typeof t.agent === "object" && t.agent !== null
-                ? t.agent._id
-                : t.agent || null;
-
+            const agentId = t.agent || null;
             const agent = agentId ? userMap[agentId] : null;
 
             return (
               <tr
-                key={t._id || t.id}
-                onClick={() => handleRowClick(t._id || t.id)}
+                key={t._id}
                 className="clickable-row"
+                onClick={() => openTicket(t._id)}
               >
-                <td>{t.title || "Untitled"}</td>
+                <td>{t.title}</td>
+                <td>{t.status}</td>
+                <td>{t.priority}</td>
 
-                <td className={`status ${t.status?.toLowerCase() || ""}`}>
-                  {t.status || "Open"}
-                </td>
-
-                <td className={`priority ${t.priority?.toLowerCase() || ""}`}>
-                  {t.priority || "N/A"}
-                </td>
-
+                {/* Agent Name Column */}
                 <td>
                   {agent
-                    ? `${agent.name || agent.email} (${agent.email})`
+                    ? `${agent.name} (${agent.email})`
                     : "Unassigned"}
                 </td>
 
-                <td>{created}</td>
-                <td>{updated}</td>
+                <td>{formatDate(t.createdAt)}</td>
+                <td>
+                  {t.updatedAt && t.updatedAt !== t.createdAt
+                    ? formatDate(t.updatedAt)
+                    : "—"}
+                </td>
               </tr>
             );
           })}
@@ -136,5 +100,3 @@ function TicketsTable({ tickets: propTickets }) {
     </div>
   );
 }
-
-export default TicketsTable;
