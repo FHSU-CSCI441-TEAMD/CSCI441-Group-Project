@@ -20,17 +20,18 @@
    FILTER SECTION
 ========================================= */
 
-/* Filters Row */
+/* Filters Row (3 dropdowns + button in one row) */
 .filter-section {
   display: flex;
-  align-items: flex-end; /* Aligns everything on the same baseline */
+  align-items: flex-end;         /* align by bottom edge */
+  justify-content: center;       /* center the whole group */
   gap: 24px;
   margin-bottom: 25px;
   flex-wrap: wrap;
 }
 
 /* Each filter group (label + dropdown) */
-.filter-group {
+.filter-section > div {
   display: flex;
   flex-direction: column;
 }
@@ -45,31 +46,35 @@
   background-color: #fff;
 }
 
-/* Reset button — now matches exact dropdown height and alignment */
+/* Reset button inside filter row */
 .reset-btn {
   padding: 0 20px;
-  height: 42px;               /* EXACT match with dropdowns */
+  height: 42px;                  /* match dropdown height */
   background-color: #444;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 
-  /* Perfect centering */
+  /* center text */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* remove browser outlines / borders */
+  outline: none;
+  box-shadow: none;
 }
 
+/* Hover + focus states */
 .reset-btn:hover {
   background-color: #222;
 }
 
-/* Force alignment if button wraps to next row */
-@media (min-width: 769px) {
-  .reset-btn {
-    align-self: flex-end;  /* Aligns with the dropdown baselines on desktop */
-  }
+.reset-btn:focus,
+.reset-btn:active {
+  outline: none;
+  box-shadow: none;
 }
 
 /* =========================================
@@ -137,18 +142,16 @@
 
   .filter-section {
     flex-direction: column;
+    align-items: stretch;        /* full width on mobile */
     gap: 15px;
   }
 
-  .filter-group {
+  .filter-section > div,
+  .reset-btn {
     width: 100%;
   }
 
   .filter-select {
-    width: 100%;
-  }
-
-  .reset-btn {
     width: 100%;
   }
 }
