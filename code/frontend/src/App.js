@@ -30,7 +30,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/ticket/:id" element={<TicketDetails />} />
-          <Route path="/admin-home" element={<AdminHome />} />
+          {/*<Route path="/admin-home" element={<AdminHome />} /> */}
           <Route path="/admin-reports" element={<AdminReports />} />
           {/*<Route path="/admin-reassign/:id" element={<AdminReassignTicket />} /> */}
         </Routes>

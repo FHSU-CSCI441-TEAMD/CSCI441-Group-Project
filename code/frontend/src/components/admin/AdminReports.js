@@ -45,6 +45,23 @@ export default function AdminReports() {
     loadUsers();
   }, []);
 
+    // 🔁 Refresh agent list whenever tickets change (fixes delayed updates)
+  useEffect(() => {
+    const loadUsers = async () => {
+      const res = await fetch(`${API_BASE}/api/users`, {
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      }
+    };
+
+    loadUsers();
+  }, [tickets]);
+
+
   // Build map: agentId → user object
   const agentMap = useMemo(() => {
     const map = {};
