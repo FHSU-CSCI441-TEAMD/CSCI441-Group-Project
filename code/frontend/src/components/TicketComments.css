@@ -1,105 +1,95 @@
-/* Wrapper */
-.ticket-comments {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;  /* left align */
-  gap: 1rem;
-  margin-top: 2rem;
+/* ===== Wrapper Around Entire Comments Section ===== */
+.comments-wrapper {
   width: 100%;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  text-align: left;
 }
 
-/* Header */
-.ticket-comments h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-/* Error message */
-.ticket-comments .error {
-  color: #b00020;
-  font-size: 0.9rem;
-}
-
-/* Comments list */
+/* ===== Comment List ===== */
 .comments-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
+  margin-top: 1rem;
 }
 
-.comments-list li {
-  background: #f6f6f6;
+/* ===== Individual Comment Card ===== */
+.comment-card {
+  background: #f8fafc;
+  border-left: 4px solid #2c7be5;
+  padding: 14px 18px;
+  margin-bottom: 16px;
   border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-  border-left: 4px solid #0077cc;
 }
 
-/* Comment text */
-.comments-list li p {
-  margin: 0.25rem 0 0;
-  padding: 0;
-  font-size: 0.95rem;
-  line-height: 1.35rem;
+/* ===== Header Row (Author + Date) ===== */
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
-/* Comment input container */
-.comment-input {
+.comment-header strong {
+  font-size: 1rem;
+  color: #333;
+}
+
+.comment-date {
+  font-size: 0.85rem;
+  color: #777;
+  white-space: nowrap;
+}
+
+/* ===== Comment Body Text ===== */
+.comment-text {
+  margin: 0;
+  padding-top: 4px;
+  color: #444;
+  line-height: 1.4;
+}
+
+/* ===== Add Comment Box ===== */
+.comment-input-wrapper {
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  gap: 0.5rem;
+  gap: 10px;
 }
 
-/* Text area */
-.comment-input textarea {
+/* Textarea */
+.comment-textarea {
   width: 100%;
-  min-height: 80px;
+  min-height: 100px;
+  padding: 10px;
   resize: vertical;
-  padding: 0.75rem;
-  border-radius: 6px;
+  font-size: 1rem;
   border: 1px solid #ccc;
-  font-size: 0.95rem;
-  font-family: inherit;
-}
-
-/* Post button */
-.comment-input button {
-  align-self: flex-start; /* keep button left aligned */
-  background: #0077cc;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
   border-radius: 6px;
-  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+/* Submit Button */
+.comment-submit-btn {
+  align-self: flex-start;
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  font-size: 1rem;
 }
 
-.comment-input button:hover {
-  background: #005fa3;
+.comment-submit-btn:hover {
+  background-color: #0c56c7;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .comments-list li {
-    padding: 0.6rem;
-  }
-
-  .comment-input textarea {
-    min-height: 70px;
-  }
-
-  .comment-input button {
-    width: 100%; /* full width button on mobile */
-    text-align: center;
-  }
-}
-
-/* Force comments section to be left-aligned even if a parent container centers text */
-.ticket-comments,
-.ticket-comments * {
+/* ===========================================================
+   Prevent parent containers (like TicketDetails) from forcing
+   centered text on the comments layout.
+   =========================================================== */
+.comments-wrapper,
+.comments-wrapper * {
   text-align: left !important;
 }
