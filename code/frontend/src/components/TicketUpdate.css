@@ -1,0 +1,102 @@
+/* ========= Page Layout ========= */
+.update-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 120px 1rem 2rem; /* pushes below navbar */
+  background: #f8fafc;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* ========= Update Card ========= */
+.update-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px 28px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  text-align: left;
+}
+
+.update-card h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* ========= Form Controls ========= */
+.update-card label {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.update-card select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  background: #fff;
+  outline: none;
+}
+
+.update-card select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 3px rgba(74,144,226,0.4);
+}
+
+/* ========= Buttons ========= */
+.save-btn,
+.cancel-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+/* Save Button */
+.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  background-color: #d0d0d0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #bababa;
+}
+
+/* ========= Mobile Adjustments ========= */
+@media (max-width: 500px) {
+  .update-card {
+    padding: 20px;
+  }
+
+  .update-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
