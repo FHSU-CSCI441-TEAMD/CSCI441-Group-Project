@@ -14,6 +14,7 @@ import AdminHome from "./components/admin/AdminHome";
 import AdminReports from "./components/admin/AdminReports";
 import AdminReassignTicket from "./components/admin/AdminReassignTicket";
 import AgentHome from "./components/agent/AgentHome";
+import TicketUpdate from './components/TicketUpdate';
 
 
 function App() {
