@@ -158,3 +158,22 @@
     text-align: center;
   }
 }
+
+/* === Edit Ticket Button === */
+.edit-ticket-button {
+  display: inline-block;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #10b981; /* green */
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.edit-ticket-button:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}

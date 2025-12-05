@@ -43,22 +43,29 @@ export default function TicketUpdate() {
     loadData();
   }, [id, isAdmin]);
 
-  const saveChanges = async () => {
+    const saveChanges = async () => {
     const updates = {};
 
     if (ticket.status) updates.status = ticket.status;
     if (isAdmin && ticket.agent?._id) updates.agentId = ticket.agent._id;
 
     await fetch(`${API_BASE}/api/tickets/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updates),
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
     });
 
     await fetchTickets();
-    navigate(`/ticket/${id}`);
-  };
+
+    // Redirect based on role
+    if (currentUser.role === "Admin") {
+        navigate("/admin-reports");
+    } else {
+        navigate("/agent-home");
+    }
+    };
+
 
   if (!ticket) return <p>Loading...</p>;
 
@@ -110,12 +117,13 @@ export default function TicketUpdate() {
             Save Changes
           </button>
 
-          <button
+            <button
             className="cancel-btn"
-            onClick={() => navigate(`/ticket/${id}`)}
-          >
+            onClick={() => navigate(`/ticket/${id}`, { replace: true })}
+            >
             Cancel
-          </button>
+            </button>
+
         </div>
       </div>
     </>
