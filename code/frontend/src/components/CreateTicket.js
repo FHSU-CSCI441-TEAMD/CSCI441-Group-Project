@@ -85,8 +85,8 @@ function CreateTicket() {
   return (
     <main>
       <div className="formContainer">
-        <h2>Create New Ticket</h2>
-        <p>Required fields are marked with an asterisk*.</p>
+        <h1>Create New Ticket</h1>
+        <h2>Required fields are marked with an asterisk*.</h2>
 
         {error && <p className="error-message">{error}</p>}
 

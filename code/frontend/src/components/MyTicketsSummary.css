@@ -1,4 +1,4 @@
-.headerContainer {
+headerContainer {
   padding: 16px 24px;
   background-color: #f2f2f2;
   border-bottom: 1px solid #ccc;
@@ -15,41 +15,42 @@
   gap: 10px;
 }
 
-/* Paragraph row: 3 side-by-side on desktop */
+/* Paragraph row: 4 side-by-side on desktop */
 .paragraphRow {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   padding: 8px;
+  justify-content: center; /* ⬅ center the group of boxes */
 }
 
+/* Each stat pill */
 .paragraphRow p {
   margin: 0;
   color: #000;
   font-size: 1rem;
   min-width: 100px; /* Helps maintain width on mobile */
-}
 
-.open {
-  background-color: #63c0b4;
+  /* Center the text inside the pill */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 6px 12px;
   border-radius: 5px;
   font-weight: bold;
-  padding: 4px;
-  text-align: center;
+}
+
+/* Individual colors */
+.open {
+  background-color: #63c0b4;
 }
 
 .inProgress {
   background-color: #199b40;
-  border-radius: 5px;
-  font-weight: bold;
-  padding: 4px;
-  text-align: center;
 }
 
 .resolved {
   background-color: #cada43;
-  border-radius: 5px;
-  font-weight: bold;
-  padding: 4px;
-  text-align: center;
 }
