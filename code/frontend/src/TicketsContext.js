@@ -13,6 +13,34 @@ export function TicketsProvider({ children }) {
   const [tickets, setTickets] = useState([]);
 
   // =========================
+  //  AGENT LOOKUP MAP (ID → Name)
+  // =========================
+  const [agentsMap, setAgentsMap] = useState({});
+
+  // Fetch all users and build a map of agentId → agentName
+  const fetchAgents = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/users`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) return;
+
+      const users = await res.json();
+      const agents = users.filter((u) => u.role === "Agent");
+
+      const map = {};
+      agents.forEach((a) => {
+        map[a._id] = a.name || a.email;
+      });
+
+      setAgentsMap(map);
+    } catch (err) {
+      console.error("❌ Failed to fetch agents:", err);
+    }
+  };
+
+  // =========================
   //  REFRESH CURRENT USER
   // =========================
   const refreshCurrentUser = async () => {
@@ -147,6 +175,7 @@ export function TicketsProvider({ children }) {
     };
 
     init();
+    fetchAgents();
   }, []);
 
   // =========================
@@ -184,7 +213,8 @@ export function TicketsProvider({ children }) {
         createTicket,
         fetchTickets,
         updateTicket,          
-        updateTicketInContext,  
+        updateTicketInContext,
+        agentsMap,  
       }}
     >
       {children}

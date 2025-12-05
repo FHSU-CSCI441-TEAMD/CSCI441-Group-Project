@@ -4,8 +4,8 @@ import { useTickets } from "../TicketsContext";
 import { useNavigate } from "react-router-dom";
 import "./TicketsTable.css";
 
-function TicketsTable({ tickets: propTickets }) {
-  const { tickets: contextTickets, currentUser } = useTickets();
+export default function TicketsTable({ tickets: propTickets }) {
+  const { tickets: contextTickets, agentsMap } = useTickets();
   const tickets = propTickets || contextTickets || [];
   const navigate = useNavigate();
 
@@ -35,10 +35,6 @@ function TicketsTable({ tickets: propTickets }) {
 
   return (
     <div className="tickets-table-container">
-      <h3>
-        {currentUser ? `${currentUser.name}'s Tickets` : "All Tickets"}
-      </h3>
-
       <table className="tickets-table">
         <thead>
           <tr>
@@ -59,11 +55,27 @@ function TicketsTable({ tickets: propTickets }) {
                 ? formatDate(t.updatedAt)
                 : "—";
 
+            // -------------------------------------
+            // ⭐ AGENT NAME LOOKUP LOGIC
+            // -------------------------------------
+
+            let agentName = "Unassigned";
+
+            // If backend returns agent object (newer format)
+            if (t.agent && typeof t.agent === "object" && t.agent.name) {
+              agentName = t.agent.name;
+            }
+
+            // If backend returns ONLY agentId string (older format)
+            if (typeof t.agent === "string") {
+              agentName = agentsMap[t.agent] || "Unassigned";
+            }
+
             return (
               <tr
-                key={t._id || t.id}
-                onClick={() => handleRowClick(t._id || t.id)}
+                key={t._id}
                 className="clickable-row"
+                onClick={() => handleRowClick(t._id)}
               >
                 <td>{t.title || "Untitled"}</td>
 
@@ -75,7 +87,8 @@ function TicketsTable({ tickets: propTickets }) {
                   {t.priority || "N/A"}
                 </td>
 
-                <td>{t.agent || "Unassigned"}</td>
+                {/* ⭐ Display agent name */}
+                <td>{agentName}</td>
 
                 <td>{created}</td>
                 <td>{updated}</td>
@@ -87,5 +100,3 @@ function TicketsTable({ tickets: propTickets }) {
     </div>
   );
 }
-
-export default TicketsTable;
