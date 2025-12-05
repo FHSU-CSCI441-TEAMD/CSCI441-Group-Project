@@ -91,7 +91,7 @@ export function TicketsProvider({ children }) {
       updateTicketInContext(updated);
 
       // Optional but recommended: ensure perfect sync
-      fetchTickets();
+      //fetchTickets();
 
       return updated;
     } catch (err) {
