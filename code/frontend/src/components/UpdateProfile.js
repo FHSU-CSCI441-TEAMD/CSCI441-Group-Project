@@ -28,7 +28,7 @@ export default function UpdateProfile() {
   // Centralized redirect function
   // ------------------------------------------------------------
   const redirectUserByRole = (role) => {
-    if (role === "Admin") return navigate("/admin-home");
+    if (role === "Admin") return navigate("/admin-reports");
     if (role === "Agent") return navigate("/agent-home");
     return navigate("/home"); // Customer fallback
   };
