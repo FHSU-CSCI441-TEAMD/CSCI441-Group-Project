@@ -107,3 +107,9 @@
     text-align: center;
   }
 }
+
+/* Force comments section to be left-aligned even if a parent container centers text */
+.ticket-comments,
+.ticket-comments * {
+  text-align: left !important;
+}
