@@ -60,24 +60,28 @@
   outline: none;
 }
 
-/* Radios */
+/* Radio button container */
 .radioGroup {
   display: flex;
-  justify-content: flex-start;
-  gap: 20px;
-  width: 100%;
-  padding-top: 4px;
+  align-items: center;
+  gap: 24px;                /* evenly spaced */
+  margin-top: 6px;
 }
 
+/* Each radio option */
 .radioOption {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-weight: 500;
+  cursor: pointer;
 }
 
+/* Fix radio input vertical alignment */
 .radioOption input[type="radio"] {
   cursor: pointer;
+  accent-color: #2563eb;
+  transform: translateY(1px); 
 }
 
 /* Error */
@@ -125,4 +129,9 @@
     width: 100%;
     align-self: center;
   }
+}
+
+.radioOption *,
+.radioGroup * {
+  vertical-align: middle !important;
 }
