@@ -1,4 +1,4 @@
-// UPDATED TicketDetails.js
+// src/components/TicketDetails.js
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
@@ -13,22 +13,20 @@ const API_BASE =
 
 function TicketDetails() {
   const { id } = useParams();
-
-  // ⬇️ ADD fetchTickets HERE
-  const { currentUser, updateTicket, fetchTickets } = useTickets();
+  const { currentUser, updateTicket } = useTickets();
 
   const [ticket, setTicket] = useState(null);
   const [agents, setAgents] = useState([]);
   const [error, setError] = useState("");
 
-  // Determine home route by role
+  // Role-based home route
   const getHomeRoute = () => {
-    if (currentUser?.role === "Admin") return "/admin-reports";
+    if (currentUser?.role === "Admin") return "/admin-home";
     if (currentUser?.role === "Agent") return "/agent-home";
     return "/home";
   };
 
-  // Fetch ticket + agents (if admin)
+  // Fetch ticket + agents (if Admin)
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -41,15 +39,15 @@ function TicketDetails() {
         const data = await res.json();
         setTicket(data);
 
-        // Admin → fetch all users and filter agents
+        // ADMIN: Load all users → filter agents
         if (currentUser?.role === "Admin") {
           const usersRes = await fetch(`${API_BASE}/api/users`, {
             credentials: "include",
           });
 
           if (usersRes.ok) {
-            const allUsers = await usersRes.json();
-            const onlyAgents = allUsers.filter((u) => u.role === "Agent");
+            const all = await usersRes.json();
+            const onlyAgents = all.filter((u) => u.role === "Agent");
             setAgents(onlyAgents);
           }
         }
@@ -74,16 +72,33 @@ function TicketDetails() {
 
   const canEditStatus = isAdmin || isAssignedAgent;
 
-  // Update Status
+  // --------------------------
+  // STATUS DROPDOWN FIX
+  // --------------------------
+  const currentStatusValue =
+    typeof ticket.status === "string" && ticket.status.length > 0
+      ? ticket.status
+      : "Open";
+
   const updateStatus = async (newStatus) => {
     const updated = await updateTicket(ticket._id, { status: newStatus });
-    if (updated) setTicket(updated);
+    if (updated) setTicket(updated); // UI-first update
   };
 
-  // Admin: Update Assigned Agent
+  // --------------------------
+  // ASSIGNED AGENT DROPDOWN FIX
+  // --------------------------
+  // Normalize agent ID whether backend returns object or string
+  const currentAgentId =
+    ticket.agent && typeof ticket.agent === "object"
+      ? ticket.agent._id
+      : typeof ticket.agent === "string"
+      ? ticket.agent
+      : "";
+
   const updateAssignedAgent = async (agentId) => {
     const updated = await updateTicket(ticket._id, { agentId });
-    if (updated) setTicket(updated);
+    if (updated) setTicket(updated); // UI-first update
   };
 
   return (
@@ -96,19 +111,18 @@ function TicketDetails() {
 
           <table className="ticket-info-table">
             <tbody>
-              {/* Title */}
               <tr>
                 <th>Title:</th>
                 <td>{ticket.title}</td>
               </tr>
 
-              {/* Status */}
+              {/* STATUS */}
               <tr>
                 <th>Status:</th>
                 <td>
                   {canEditStatus ? (
                     <select
-                      value={ticket.status}
+                      value={currentStatusValue}
                       onChange={(e) => updateStatus(e.target.value)}
                       className="status-dropdown"
                     >
@@ -124,7 +138,7 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Priority */}
+              {/* PRIORITY */}
               <tr>
                 <th>Priority:</th>
                 <td className={`priority ${ticket.priority?.toLowerCase()}`}>
@@ -132,7 +146,7 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Assigned Agent */}
+              {/* ASSIGNED AGENT */}
               <tr>
                 <th>Assigned Agent:</th>
                 <td>
@@ -141,7 +155,7 @@ function TicketDetails() {
                   {isAdmin && (
                     <select
                       className="assign-dropdown"
-                      value={ticket.agent?._id || ""}
+                      value={currentAgentId}
                       onChange={(e) => updateAssignedAgent(e.target.value)}
                       style={{ marginLeft: "12px" }}
                     >
@@ -156,19 +170,16 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* Created */}
               <tr>
                 <th>Created:</th>
                 <td>{new Date(ticket.createdAt).toLocaleString()}</td>
               </tr>
 
-              {/* Updated */}
               <tr>
                 <th>Updated:</th>
                 <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
               </tr>
 
-              {/* Description */}
               <tr className="desc-row">
                 <th>Description:</th>
                 <td className="desc-cell">
@@ -178,16 +189,11 @@ function TicketDetails() {
             </tbody>
           </table>
 
+          {/* COMMENTS */}
           <TicketComments ticketId={ticket._id} />
 
-          {/* FIXED Back Button */}
-          <Link
-            to={getHomeRoute()}
-            className="back-button"
-            onClick={async () => {
-              await fetchTickets();     // ⬅️ REFRESH TICKETS BEFORE NAVIGATION
-            }}
-          >
+          {/* BACK BUTTON */}
+          <Link to={getHomeRoute()} className="back-button">
             ← Back to Tickets
           </Link>
         </div>
