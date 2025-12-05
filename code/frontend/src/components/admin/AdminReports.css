@@ -54,6 +54,29 @@
 }
 
 .reset-btn {
+  display: inline-block;       /* prevent full width */
+  width: auto;                 /* size to content */
+  padding: 10px 22px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.reset-btn:hover {
+  background-color: #555;
+}
+
+.reset-btn-container {
+  width: 100%;
+  text-align: center;          /* center the button */
+  margin-top: 10px;
+}
+
+/*.reset-btn {
   padding: 0 24px;
   height: 42px;
   background-color: #444;
@@ -79,16 +102,18 @@
   outline: none;
   box-shadow: none;
 }
-
+*/
 /* =========================================
    SUMMARY BOX
 ========================================= */
 
 .summary-box {
-  background: #f8f8f8;
+  background-color: #f8f9fc;
   padding: 20px;
+  margin: 20px auto;
   border-radius: 10px;
-  margin-bottom: 30px;
+  width: 60%;                 /* fixed width instead of full page */
+  max-width: 600px;           /* prevents stretching */
   text-align: center;
 }
 

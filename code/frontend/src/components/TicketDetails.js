@@ -1,4 +1,4 @@
-// src/components/TicketDetails.js
+// UPDATED TicketDetails.js
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavigationBar from "./NavigationBar";
@@ -13,7 +13,9 @@ const API_BASE =
 
 function TicketDetails() {
   const { id } = useParams();
-  const { currentUser, updateTicket } = useTickets();
+
+  // ⬇️ ADD fetchTickets HERE
+  const { currentUser, updateTicket, fetchTickets } = useTickets();
 
   const [ticket, setTicket] = useState(null);
   const [agents, setAgents] = useState([]);
@@ -21,12 +23,12 @@ function TicketDetails() {
 
   // Determine home route by role
   const getHomeRoute = () => {
-    if (currentUser?.role === "Admin") return "/admin-home";
+    if (currentUser?.role === "Admin") return "/admin-reports";
     if (currentUser?.role === "Agent") return "/agent-home";
     return "/home";
   };
 
-  // Load Ticket + Agents (if admin)
+  // Fetch ticket + agents (if admin)
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -39,7 +41,7 @@ function TicketDetails() {
         const data = await res.json();
         setTicket(data);
 
-        // Admin: load agents
+        // Admin → fetch all users and filter agents
         if (currentUser?.role === "Admin") {
           const usersRes = await fetch(`${API_BASE}/api/users`, {
             credentials: "include",
@@ -65,28 +67,23 @@ function TicketDetails() {
 
   // Permissions
   const isAdmin = currentUser?.role === "Admin";
+
   const isAssignedAgent =
     currentUser?.role === "Agent" &&
     ticket.agent?._id === currentUser?._id;
 
   const canEditStatus = isAdmin || isAssignedAgent;
 
-  // Update Status — instant UI update
+  // Update Status
   const updateStatus = async (newStatus) => {
     const updated = await updateTicket(ticket._id, { status: newStatus });
-    if (updated) {
-      setTicket(updated); // reflect immediately
-    }
+    if (updated) setTicket(updated);
   };
 
-  // Update Assigned Agent — instant UI update
+  // Admin: Update Assigned Agent
   const updateAssignedAgent = async (agentId) => {
     const updated = await updateTicket(ticket._id, { agentId });
-
-    if (updated) {
-      // updated includes new agent reference
-      setTicket(updated);
-    }
+    if (updated) setTicket(updated);
   };
 
   return (
@@ -141,7 +138,6 @@ function TicketDetails() {
                 <td>
                   {ticket.agent?.name || "Unassigned"}
 
-                  {/* Admin can reassign */}
                   {isAdmin && (
                     <select
                       className="assign-dropdown"
@@ -182,11 +178,16 @@ function TicketDetails() {
             </tbody>
           </table>
 
-          {/* Comments */}
           <TicketComments ticketId={ticket._id} />
 
-          {/* Back Button */}
-          <Link to={getHomeRoute()} className="back-button">
+          {/* FIXED Back Button */}
+          <Link
+            to={getHomeRoute()}
+            className="back-button"
+            onClick={async () => {
+              await fetchTickets();     // ⬅️ REFRESH TICKETS BEFORE NAVIGATION
+            }}
+          >
             ← Back to Tickets
           </Link>
         </div>

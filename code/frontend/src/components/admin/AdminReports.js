@@ -150,16 +150,18 @@ export default function AdminReports() {
             </select>
           </div>
           <div className="reset-row">
-            <button
-              className="reset-btn"
-              onClick={() => {
-                setStatusFilter("");
-                setAgentFilter("");
-                setPriorityFilter("");
-              }}
-            >
-              Reset Filters
-            </button>
+            <div className="reset-btn-container">
+              <button
+                className="reset-btn"
+                onClick={() => {
+                  setStatusFilter("");
+                  setAgentFilter("");
+                  setPriorityFilter("");
+                }}
+              >
+                Reset Filters
+              </button>
+            </div>
           </div>
         </div>
 

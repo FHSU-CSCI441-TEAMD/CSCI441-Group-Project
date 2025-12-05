@@ -66,11 +66,11 @@ function NavigationBar() {
           {/* Admin links */}
           {currentUser?.role === "Admin" && (
             <>
-              {/*<li>
+              <li>
                 <Link className="navItem" to="/admin-home">
                   Admin Dashboard
                 </Link>
-              </li>*/}
+              </li>
               <li>
                 <Link className="navItem" to="/admin-reports">
                   Reports
