@@ -1,5 +1,5 @@
 /* =========================================
-   Admin Reports - Full Page Container
+   Admin Reports - Page Layout
 ========================================= */
 .admin-reports-container {
   padding: 120px 40px 40px;
@@ -8,7 +8,6 @@
   font-family: Arial, sans-serif;
 }
 
-/* Page title */
 .admin-reports-title {
   font-size: 2rem;
   font-weight: bold;
@@ -17,26 +16,22 @@
 }
 
 /* =========================================
-   FILTER SECTION
+   FILTER SECTION (3 dropdowns)
 ========================================= */
 
-/* Filters Row (3 dropdowns + button in one row) */
 .filter-section {
   display: flex;
-  align-items: flex-end;         /* align by bottom edge */
-  justify-content: center;       /* center the whole group */
+  justify-content: center;
   gap: 24px;
-  margin-bottom: 25px;
   flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-/* Each filter group (label + dropdown) */
 .filter-section > div {
   display: flex;
   flex-direction: column;
 }
 
-/* Standard dropdown styling */
 .filter-select {
   width: 180px;
   padding: 8px;
@@ -46,27 +41,35 @@
   background-color: #fff;
 }
 
-/* Reset button inside filter row */
+/* =========================================
+   RESET BUTTON — Now on its own centered row
+========================================= */
+
+.reset-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
 .reset-btn {
-  padding: 0 20px;
-  height: 42px;                  /* match dropdown height */
+  padding: 0 24px;
+  height: 42px;
   background-color: #444;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 
-  /* center text */
   display: flex;
   align-items: center;
   justify-content: center;
 
-  /* remove browser outlines / borders */
   outline: none;
   box-shadow: none;
 }
 
-/* Hover + focus states */
 .reset-btn:hover {
   background-color: #222;
 }
@@ -80,6 +83,7 @@
 /* =========================================
    SUMMARY BOX
 ========================================= */
+
 .summary-box {
   background: #f8f8f8;
   padding: 20px;
@@ -94,7 +98,6 @@
   font-weight: bold;
 }
 
-/* Remove bullets & center items */
 .summary-box ul {
   list-style: none;
   padding: 0;
@@ -109,6 +112,7 @@
 /* =========================================
    TICKETS TABLE
 ========================================= */
+
 .report-table {
   width: 100%;
   border-collapse: collapse;
@@ -135,6 +139,7 @@
 /* =========================================
    MOBILE RESPONSIVE
 ========================================= */
+
 @media (max-width: 768px) {
   .admin-reports-container {
     padding: 100px 20px 20px;
@@ -142,16 +147,20 @@
 
   .filter-section {
     flex-direction: column;
-    align-items: stretch;        /* full width on mobile */
-    gap: 15px;
-  }
-
-  .filter-section > div,
-  .reset-btn {
-    width: 100%;
+    align-items: stretch;
+    margin-bottom: 0;
   }
 
   .filter-select {
+    width: 100%;
+  }
+
+  .reset-row {
+    margin-top: 15px;
+    margin-bottom: 30px;
+  }
+
+  .reset-btn {
     width: 100%;
   }
 }

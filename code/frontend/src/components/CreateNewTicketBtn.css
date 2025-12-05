@@ -10,6 +10,8 @@ p {
 
 button {
     width: 200px;
+    display: flex;
+    align-items: center;
 }
 
 a {

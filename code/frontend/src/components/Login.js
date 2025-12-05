@@ -73,7 +73,7 @@ export default function Login() {
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
         <h2 className="login-title">Welcome back</h2>
-        <p>Login with your QuickTix credentials</p>
+        <p>Login with your QuickTix credentials.</p>
 
         {error && <p className="error-message">{error}</p>}
 
