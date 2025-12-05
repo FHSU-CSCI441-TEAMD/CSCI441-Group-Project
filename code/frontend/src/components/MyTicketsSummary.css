@@ -15,11 +15,12 @@ headerContainer {
   gap: 10px;
 }
 
-/* Paragraph row: 4 side-by-side on desktop */
+/* Paragraph row: 3 side-by-side on desktop */
 .paragraphRow {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  margin-bottom: 15px;
   padding: 8px;
   justify-content: center; /* ⬅ center the group of boxes */
 }
