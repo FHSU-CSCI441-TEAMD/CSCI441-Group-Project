@@ -13,22 +13,24 @@ const API_BASE =
 
 function TicketDetails() {
   const { id } = useParams();
-  const { currentUser, updateTicket } = useTickets();
+
+  // ❗ Only use currentUser + fetchTickets from context here
+  const { currentUser, fetchTickets } = useTickets();
 
   const [ticket, setTicket] = useState(null);
   const [agents, setAgents] = useState([]);
   const [error, setError] = useState("");
 
-  // Role-based home route
+  // Determine home route by role
   const getHomeRoute = () => {
     if (currentUser?.role === "Admin") return "/admin-home";
     if (currentUser?.role === "Agent") return "/agent-home";
     return "/home";
   };
 
-  // Fetch ticket + agents (if Admin)
+  // Fetch ticket + agents (for Admin)
   useEffect(() => {
-    const fetchTicket = async () => {
+    const loadTicket = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/tickets/${id}`, {
           credentials: "include",
@@ -37,17 +39,17 @@ function TicketDetails() {
         if (!res.ok) throw new Error("Failed to fetch ticket");
 
         const data = await res.json();
+        // data.agent is POPULATED here (because getTicketById uses populate)
         setTicket(data);
 
-        // ADMIN: Load all users → filter agents
         if (currentUser?.role === "Admin") {
           const usersRes = await fetch(`${API_BASE}/api/users`, {
             credentials: "include",
           });
 
           if (usersRes.ok) {
-            const all = await usersRes.json();
-            const onlyAgents = all.filter((u) => u.role === "Agent");
+            const allUsers = await usersRes.json();
+            const onlyAgents = allUsers.filter((u) => u.role === "Agent");
             setAgents(onlyAgents);
           }
         }
@@ -57,7 +59,7 @@ function TicketDetails() {
       }
     };
 
-    fetchTicket();
+    loadTicket();
   }, [id, currentUser?.role]);
 
   if (error) return <p>{error}</p>;
@@ -65,30 +67,51 @@ function TicketDetails() {
 
   // Permissions
   const isAdmin = currentUser?.role === "Admin";
-
   const isAssignedAgent =
     currentUser?.role === "Agent" &&
-    ticket.agent?._id === currentUser?._id;
+    (ticket.agent?._id === currentUser?._id ||
+      ticket.agent === currentUser?._id);
 
   const canEditStatus = isAdmin || isAssignedAgent;
 
-  // --------------------------
-  // STATUS DROPDOWN FIX
-  // --------------------------
+  // ---------- STATUS LOGIC ----------
   const currentStatusValue =
     typeof ticket.status === "string" && ticket.status.length > 0
       ? ticket.status
       : "Open";
 
   const updateStatus = async (newStatus) => {
-    const updated = await updateTicket(ticket._id, { status: newStatus });
-    if (updated) setTicket(updated); // UI-first update
+    try {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const updated = await res.json();
+      if (!res.ok) {
+        alert(updated.message || "Failed to update status.");
+        return;
+      }
+
+      // ✅ UI-first update: keep local ticket shape, only change status/updatedAt
+      setTicket((prev) => ({
+        ...prev,
+        status: newStatus,
+        updatedAt: updated.updatedAt || prev.updatedAt,
+      }));
+
+      // ✅ refresh global list for Admin/Agent dashboards
+      await fetchTickets();
+    } catch (err) {
+      console.error(err);
+      alert("Network error updating status.");
+    }
   };
 
-  // --------------------------
-  // ASSIGNED AGENT DROPDOWN FIX
-  // --------------------------
-  // Normalize agent ID whether backend returns object or string
+  // ---------- ASSIGNED AGENT LOGIC ----------
+  // Normalize agent ID for dropdown value
   const currentAgentId =
     ticket.agent && typeof ticket.agent === "object"
       ? ticket.agent._id
@@ -97,8 +120,37 @@ function TicketDetails() {
       : "";
 
   const updateAssignedAgent = async (agentId) => {
-    const updated = await updateTicket(ticket._id, { agentId });
-    if (updated) setTicket(updated); // UI-first update
+    try {
+      const res = await fetch(`${API_BASE}/api/tickets/${ticket._id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentId }),
+      });
+
+      const updated = await res.json();
+      if (!res.ok) {
+        alert(updated.message || "Failed to reassign ticket.");
+        return;
+      }
+
+      // Find the full agent object from our local agents list
+      const selectedAgent =
+        agents.find((a) => a._id === agentId) || null;
+
+      // ✅ Keep ticket.agent as full object so label + dropdown both work
+      setTicket((prev) => ({
+        ...prev,
+        agent: selectedAgent,
+        updatedAt: updated.updatedAt || prev.updatedAt,
+      }));
+
+      // Refresh global tickets for reports/home views
+      await fetchTickets();
+    } catch (err) {
+      console.error(err);
+      alert("Network error reassigning agent.");
+    }
   };
 
   return (
@@ -111,12 +163,13 @@ function TicketDetails() {
 
           <table className="ticket-info-table">
             <tbody>
+              {/* Title */}
               <tr>
                 <th>Title:</th>
                 <td>{ticket.title}</td>
               </tr>
 
-              {/* STATUS */}
+              {/* Status */}
               <tr>
                 <th>Status:</th>
                 <td>
@@ -138,7 +191,7 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* PRIORITY */}
+              {/* Priority */}
               <tr>
                 <th>Priority:</th>
                 <td className={`priority ${ticket.priority?.toLowerCase()}`}>
@@ -146,11 +199,14 @@ function TicketDetails() {
                 </td>
               </tr>
 
-              {/* ASSIGNED AGENT */}
+              {/* Assigned Agent */}
               <tr>
                 <th>Assigned Agent:</th>
                 <td>
-                  {ticket.agent?.name || "Unassigned"}
+                  {/* Label: use populated object if available */}
+                  {ticket.agent && typeof ticket.agent === "object"
+                    ? ticket.agent.name
+                    : "Unassigned"}
 
                   {isAdmin && (
                     <select
@@ -170,16 +226,19 @@ function TicketDetails() {
                 </td>
               </tr>
 
+              {/* Created */}
               <tr>
                 <th>Created:</th>
                 <td>{new Date(ticket.createdAt).toLocaleString()}</td>
               </tr>
 
+              {/* Updated */}
               <tr>
                 <th>Updated:</th>
                 <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
               </tr>
 
+              {/* Description */}
               <tr className="desc-row">
                 <th>Description:</th>
                 <td className="desc-cell">
@@ -189,10 +248,10 @@ function TicketDetails() {
             </tbody>
           </table>
 
-          {/* COMMENTS */}
+          {/* Comments */}
           <TicketComments ticketId={ticket._id} />
 
-          {/* BACK BUTTON */}
+          {/* Back Button */}
           <Link to={getHomeRoute()} className="back-button">
             ← Back to Tickets
           </Link>
