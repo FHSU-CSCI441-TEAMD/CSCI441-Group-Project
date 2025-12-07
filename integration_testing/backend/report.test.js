@@ -3,14 +3,16 @@ import mongoose from 'mongoose';
 import { app, server } from '../../code/backend/server.js';
 import User from '../../code/backend/models/userModel.js';
 import Ticket from '../../code/backend/models/ticketModel.js';
+import { connect, close } from './test-db-setup.js';
+
+jest.setTimeout(60000);
 
 let adminCookie;
 let customerId, agentId, adminId;
 
 // Database Setup
 beforeAll(async () => {
-    const testMongoUri = process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/ticketingTestDB_Report';
-    await mongoose.connect(testMongoUri);
+    await connect();
 
     // Create users & get admin cookie
     const customer = await User.create({ name: 'Report Customer', email: 'customer.report@test.com', password: 'password123', role: 'Customer' });
@@ -30,7 +32,7 @@ beforeAll(async () => {
 afterAll(async () => {
     await User.deleteMany({});
     await Ticket.deleteMany({});
-    await mongoose.connection.close();
+    await close();
     await new Promise(resolve => server.close(resolve));
 });
 

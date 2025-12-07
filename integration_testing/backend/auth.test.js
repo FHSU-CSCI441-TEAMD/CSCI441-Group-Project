@@ -5,6 +5,7 @@ import { app, server } from '../../code/backend/server.js';
 import User from '../../code/backend/models/userModel.js';
 import Token from '../../code/backend/models/tokenModel.js';
 import { sendPasswordResetEmail } from '../../code/backend/services/emailService.js';
+import { connect, close } from './test-db-setup.js';
 
 // Mock the Email Service
 jest.mock('../../code/backend/services/emailService.js', () => ({
@@ -13,9 +14,8 @@ jest.mock('../../code/backend/services/emailService.js', () => ({
 
 // Database Setup
 beforeAll(async () => {
-    const testMongoUri = process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/ticketingTestDB_Auth';
-    await mongoose.connect(testMongoUri);
-});
+    await connect();
+}, 60000);
 
 afterEach(async () => {
     await User.deleteMany({});
@@ -23,7 +23,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    await mongoose.connection.close();
+    await close();
     await new Promise(resolve => server.close(resolve));
 });
 

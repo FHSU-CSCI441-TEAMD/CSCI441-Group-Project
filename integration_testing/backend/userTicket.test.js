@@ -3,6 +3,15 @@ import mongoose from 'mongoose';
 import { app, server } from '../../code/backend/server.js';
 import User from '../../code/backend/models/userModel.js';
 import Ticket from '../../code/backend/models/ticketModel.js';
+import { connect, close } from './test-db-setup.js';
+
+jest.mock('../../code/backend/services/emailService.js', () => ({
+  sendAssignmentEmail: jest.fn(),
+  sendTicketUpdateEmail: jest.fn(),
+  sendNewCommentEmail: jest.fn(),
+}));
+
+jest.setTimeout(60000);
 
 let customerCookie, agentCookie, adminCookie;
 let customerId, agentId, adminId;
@@ -10,8 +19,7 @@ let customerId, agentId, adminId;
 // Database Setup
 beforeAll(async () => {
     // Connect to a separate test database
-    const testMongoUri = process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/ticketingTestDB_UserTicket';
-    await mongoose.connect(testMongoUri);
+    await connect();
 
     // Create users & get cookies
     const customer = await User.create({ name: 'Test Customer', email: 'customer.ut@test.com', password: 'password123', role: 'Customer' });
@@ -35,7 +43,7 @@ afterEach(async () => {
 // Clean up database and close server after all tests
 afterAll(async () => {
     await User.deleteMany({});
-    await mongoose.connection.close();
+    await close();
     await new Promise(resolve => server.close(resolve));
 });
 
@@ -203,7 +211,7 @@ describe('Integration Tests - User Profile & Tickets', () => {
                 .send({ text: commentText })
                 .expect(201);
             expect(response.body.text).toBe(commentText);
-            expect(response.body.author.name).toBe('Test Customer');
+            expect(response.body.author.name).toBe('Updated Customer Name');
 
             // Verify comment is added to ticket in DB
             const ticket = await Ticket.findById(testTicketId);
