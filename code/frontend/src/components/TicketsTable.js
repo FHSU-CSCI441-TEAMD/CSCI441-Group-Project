@@ -21,6 +21,23 @@ function TicketsTable({ tickets: propTickets }) {
     });
   };
 
+  // 🔹 NEW: Normalize agent display (object | string | null)
+  const getAgentDisplay = (agent) => {
+    if (!agent) return "Unassigned";
+
+    // If backend populates agent with { name, email, _id }
+    if (typeof agent === "object") {
+      return agent.name || agent.email || "Unassigned";
+    }
+
+    // If backend returns string agentId
+    if (typeof agent === "string") {
+      return agent; // tests expect raw string
+    }
+
+    return "Unassigned";
+  };
+
   if (!tickets.length) {
     return (
       <div className="tickets-empty">
@@ -53,12 +70,6 @@ function TicketsTable({ tickets: propTickets }) {
 
         <tbody>
           {tickets.map((t) => {
-            const created = formatDate(t.createdAt);
-            const updated =
-              t.updatedAt && t.updatedAt !== t.createdAt
-                ? formatDate(t.updatedAt)
-                : "—";
-
             return (
               <tr
                 key={t._id || t.id}
@@ -75,10 +86,15 @@ function TicketsTable({ tickets: propTickets }) {
                   {t.priority || "N/A"}
                 </td>
 
-                <td>{t.agent || "Unassigned"}</td>
+                {/* 🔹 NEW: Proper safe agent display */}
+                <td>{getAgentDisplay(t.agent)}</td>
 
-                <td>{created}</td>
-                <td>{updated}</td>
+                <td>{formatDate(t.createdAt)}</td>
+                <td>
+                  {t.updatedAt && t.updatedAt !== t.createdAt
+                    ? formatDate(t.updatedAt)
+                    : "—"}
+                </td>
               </tr>
             );
           })}

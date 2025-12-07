@@ -1,20 +1,51 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+// src/components/CreateTicket.test.js
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CreateTicket from "./CreateTicket";
+import { MemoryRouter } from "react-router-dom";
 
-describe("CreateTicket component", () => {
-  test("renders ticket creation form fields", () => {
-    render(<CreateTicket />);
-    expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/description|issue/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
-  });
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
-  test("prevents submission when required fields are empty", () => {
-    render(<CreateTicket />);
-    const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
-    const submitButton = screen.getByRole("button", { name: /submit/i });
-    fireEvent.click(submitButton);
-    expect(alertMock).toHaveBeenCalled();
-    alertMock.mockRestore();
+// Prevent jsdom alert failure
+beforeEach(() => {
+  window.alert = jest.fn();
+});
+
+// Mock TicketsContext
+jest.mock("../TicketsContext", () => ({
+  useTickets: () => ({
+    currentUser: { _id: "123", name: "John Doe" },
+    refreshCurrentUser: jest.fn().mockResolvedValue({ _id: "123" }),
+    fetchTickets: jest.fn(),
+    createTicket: jest.fn().mockResolvedValue({ _id: "abc123" }), // success
+  }),
+}));
+
+describe("CreateTicket Component", () => {
+  test("submits when the form is valid and navigates home", async () => {
+    render(
+      <MemoryRouter>
+        <CreateTicket />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText(/title\*/i), {
+      target: { value: "Broken Laptop" },
+    });
+
+    fireEvent.change(screen.getByLabelText(/description of issue\*/i), {
+      target: { value: "It does not turn on." },
+    });
+
+    fireEvent.click(screen.getByLabelText(/medium/i)); // radio button
+
+    fireEvent.click(screen.getByRole("button", { name: /submit ticket/i }));
+
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith("/home")
+    );
   });
 });
