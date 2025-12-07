@@ -1,3 +1,7 @@
+// written by: Nirak & Jakob
+// tested by: Nirak & Jakob
+// debugged by: Nirak & Jakob
+
 import jwt from 'jsonwebtoken';
 import User from '../../code/backend/models/userModel.js';
 import { protect, admin, agentOrAdmin } from '../../code/backend/middleware/authMiddleware.js';

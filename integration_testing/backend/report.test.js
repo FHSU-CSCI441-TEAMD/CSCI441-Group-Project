@@ -1,3 +1,7 @@
+// written by: Nirak & Jakob
+// tested by: Nirak & Jakob
+// debugged by: Nirak & Jakob
+
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { app, server } from '../../code/backend/server.js';

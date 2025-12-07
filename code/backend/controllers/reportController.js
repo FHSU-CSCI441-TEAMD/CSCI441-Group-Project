@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import Ticket from '../models/ticketModel.js';
 import mongoose from 'mongoose';
 

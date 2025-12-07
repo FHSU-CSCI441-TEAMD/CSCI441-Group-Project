@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import User from '../models/userModel.js';
 
 const getUserProfile = async (req, res) => {

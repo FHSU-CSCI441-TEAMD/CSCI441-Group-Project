@@ -1,3 +1,7 @@
+// written by: Jakob
+// tested by: Jakob
+// debugged by: Jakob
+
 import mongoose from 'mongoose';
 
 const commentSchema = new mongoose.Schema(

@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 

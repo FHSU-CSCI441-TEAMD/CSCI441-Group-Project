@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({

@@ -1,3 +1,7 @@
+// written by: Nirak & Jakob
+// tested by: Nirak & Jakob
+// debugged by: Nirak & Jakob
+
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 

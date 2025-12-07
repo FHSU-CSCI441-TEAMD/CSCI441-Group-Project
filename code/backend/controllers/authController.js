@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import User from '../models/userModel.js';
 import Token from '../models/tokenModel.js';
 import generateToken from '../utils/generateToken.js';

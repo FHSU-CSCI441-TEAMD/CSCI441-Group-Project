@@ -1,3 +1,7 @@
+// written by: Chan Nirak Choun
+// tested by: Chan Nirak Choun
+// debugged by: Chan Nirak Choun
+
 import mongoose from 'mongoose';
 
 const connectDB = async () => {

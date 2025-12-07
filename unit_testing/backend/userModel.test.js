@@ -1,3 +1,7 @@
+// written by: Nirak & Jakob
+// tested by: Nirak & Jakob
+// debugged by: Nirak & Jakob
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import User from '../../code/backend/models/userModel.js';

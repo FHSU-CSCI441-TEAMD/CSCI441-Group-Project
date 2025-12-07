@@ -1,3 +1,7 @@
+// written by: Nirak
+// tested by: Nirak
+// debugged by: Nirak
+
 import Ticket from '../models/ticketModel.js';
 import Comment from '../models/commentModel.js';
 import User from '../models/userModel.js';
