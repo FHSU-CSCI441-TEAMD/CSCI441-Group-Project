@@ -8,8 +8,8 @@
     "dev": "nodemon -r dotenv/config server.js",
     "start": "node server.js",
     "seed": "node seeder.js",
-    "test:unit": "jest ../../unit_testing/backend/userModel.test.js",
-    "test:integration": "jest ../../integration_testing/backend/"
+    "test:unit": "jest unit_testing/backend/userModel.test.js",
+    "test:integration": "jest integration_testing/backend/"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,12 @@
     "nodemailer": "^7.0.9"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.4.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   }
 }

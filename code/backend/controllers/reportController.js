@@ -1,4 +1,5 @@
 import Ticket from '../models/ticketModel.js';
+import mongoose from 'mongoose';
 
 const getTicketReport = async (req, res) => {
   try {
@@ -7,7 +8,7 @@ const getTicketReport = async (req, res) => {
     const matchCriteria = {};
     if (status) matchCriteria.status = status;
     if (priority) matchCriteria.priority = priority;
-    if (agentId) matchCriteria.agent = mongoose.Types.ObjectId(agentId);
+    if (agentId) matchCriteria.agent = new mongoose.Types.ObjectId(agentId);
 
     const report = await Ticket.aggregate([
       { $match: matchCriteria },

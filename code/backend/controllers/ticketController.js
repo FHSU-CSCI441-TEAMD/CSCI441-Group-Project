@@ -70,7 +70,8 @@ const getTicketById = async (req, res) => {
 
     res.status(200).json(ticket);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const statusCode = res.statusCode === 200 ? 400 : res.statusCode;
+    res.status(statusCode).json({ message: error.message });
   }
 };
 

@@ -10,7 +10,9 @@ import reportRoutes from './routes/reportRoutes.js';
 
 dotenv.config();
 
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -31,6 +33,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/reports', reportRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is listening at http://localhost:${port}`);
+const PORT = process.env.NODE_ENV === 'test' ? 0 : port;
+const server = app.listen(PORT, () => {
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`Server is listening at http://localhost:${port}`);
+  }
 });
+
+export { app, server };
