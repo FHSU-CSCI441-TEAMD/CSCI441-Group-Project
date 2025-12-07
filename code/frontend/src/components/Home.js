@@ -1,5 +1,8 @@
-import React from 'react';
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/Home.js
+import React from 'react';
 import NavigationBar from './NavigationBar';
 import MyTicketsSummary from './MyTicketsSummary';
 import TicketsTable from './TicketsTable';

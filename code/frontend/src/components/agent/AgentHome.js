@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 import React from 'react';
 import NavigationBar from '../NavigationBar';
 import TicketsTable from '../TicketsTable';

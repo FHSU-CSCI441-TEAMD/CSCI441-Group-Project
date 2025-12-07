@@ -1,3 +1,6 @@
+/* written by: Gregory Hall
+   tested by: Gregory Hall
+   debugged by: Gregory Hall */
 /* =========================================
    Admin Reports - Page Layout
 ========================================= */
@@ -108,7 +111,6 @@
 ========================================= */
 
 .summary-box {
-  background-color: #f8f9fc;
   padding: 20px;
   margin: 20px auto;
   border-radius: 10px;

@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/NavigationBar.js
 import { Link, useNavigate } from "react-router-dom";
 import "./AgentNavigationBar.css";

@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 import React, { useMemo } from "react";
 import { useTickets } from "../TicketsContext";
 import "./MyTicketsSummary.css";

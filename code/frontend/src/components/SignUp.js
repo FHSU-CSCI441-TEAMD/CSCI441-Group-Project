@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/SignUp.js
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -52,7 +55,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      // 👇 Build the full User object
+      // Build the full User object
       const newUser = {
         userId: email.trim(),           // ✅ userId = email
         name: name.trim(),              // ✅ backend expects `name`

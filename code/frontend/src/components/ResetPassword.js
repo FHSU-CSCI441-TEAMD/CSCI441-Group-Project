@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/ResetPassword.js
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";

@@ -1,4 +1,7 @@
-/* Wrapper around the button — centers it */
+/* written by: Gregory Hall
+   tested by: Gregory Hall
+   debugged by: Gregory Hall */
+/* Wrapper around the button*/
 .new-ticket-btn-wrapper {
   display: flex;
   justify-content: center;

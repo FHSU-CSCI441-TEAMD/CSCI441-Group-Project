@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/ForgotPassword.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";

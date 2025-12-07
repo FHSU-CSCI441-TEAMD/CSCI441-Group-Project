@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/Login.js
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";

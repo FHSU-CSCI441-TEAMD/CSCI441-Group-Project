@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/TicketsContext.js
 import React, { createContext, useContext, useEffect, useState } from "react";
 

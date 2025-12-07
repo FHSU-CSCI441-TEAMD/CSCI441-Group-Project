@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/TicketComments.js
 import React, { useEffect, useState } from "react";
 import "./TicketComments.css";

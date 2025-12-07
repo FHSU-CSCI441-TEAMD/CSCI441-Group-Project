@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 import { Link } from 'react-router-dom';
 import './CreateNewTicketBtn.css';
 

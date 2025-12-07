@@ -1,5 +1,7 @@
-/* 🌿 Center everything on screen */
-.signup-container {
+/* written by: Gregory Hall
+   tested by: Gregory Hall
+   debugged by: Gregory Hall */
+   .signup-container {
   display: flex;
   justify-content: center;
   align-items: center;

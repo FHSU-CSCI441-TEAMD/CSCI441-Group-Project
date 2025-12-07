@@ -1,8 +1,11 @@
+/* written by: Gregory Hall
+   tested by: Gregory Hall
+   debugged by: Gregory Hall */
 /* ===== Card Container ===== */
 .update-profile-container {
-  max-width: 520px;                 /* a bit wider for comfort */
+  max-width: 520px;                 
   margin: 7vh auto;
-  padding: 2rem 2rem;               /* ample padding so nothing hugs edges */
+  padding: 2rem 2rem;               
   background-color: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 18px rgba(0,0,0,0.1);

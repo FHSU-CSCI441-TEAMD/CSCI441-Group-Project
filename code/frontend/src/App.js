@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/App.js
 import './App.css';
 import { Routes, Route } from 'react-router-dom';

@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/TicketsTable.js
 import React from "react";
 import { useTickets } from "../TicketsContext";

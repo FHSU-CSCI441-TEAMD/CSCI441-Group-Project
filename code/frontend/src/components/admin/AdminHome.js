@@ -1,3 +1,6 @@
+// written by: Gregory Hall
+// tested by: Gregory Hall
+// debugged by: Gregory Hall
 // src/components/admin/AdminHome.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useTickets } from "../../TicketsContext";
